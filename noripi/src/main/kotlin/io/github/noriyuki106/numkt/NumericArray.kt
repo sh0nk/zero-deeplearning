@@ -60,3 +60,5 @@ operator fun NumericArray<Double>.div(that: NumericArray<Double>): NumericArray<
 
 operator fun NumericArray<Double>.div(that: Double): NumericArray<Double> = narrayOf(*this.values.map { it / that }.toTypedArray())
 operator fun NumericArray<Double>.div(that: Int): NumericArray<Double> = narrayOf(*this.values.map { it / that }.toTypedArray())
+
+fun NumericArray<Double>.sum(): Double = this.values.sum()

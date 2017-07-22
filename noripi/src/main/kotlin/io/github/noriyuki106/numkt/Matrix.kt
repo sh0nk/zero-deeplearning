@@ -18,7 +18,7 @@ package io.github.noriyuki106.numkt
 
 import java.util.Arrays
 
-class Matrix<T : Number>(val values: Array<out NumericArray<T>>) {
+class Matrix<out T : Number>(val values: Array<out NumericArray<T>>) {
     val rowSize = this.values.size
     val colSize = this.values.firstOrNull()?.length ?: 0
 
