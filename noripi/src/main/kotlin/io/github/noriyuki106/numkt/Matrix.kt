@@ -14,31 +14,17 @@
  *
  * @author Noriyuki Ishida
  */
-package io.github.noriyuki106
+package io.github.noriyuki106.numkt
 
-import io.github.noriyuki106.numkt.div
-import io.github.noriyuki106.numkt.matrixOf
-import io.github.noriyuki106.numkt.minus
-import io.github.noriyuki106.numkt.narrayOf
-import io.github.noriyuki106.numkt.plus
-import io.github.noriyuki106.numkt.times
+import java.util.Arrays
 
-fun main(args: Array<String>) {
-//    sample1_5_3()
-    sample1_5_4()
+class Matrix<out T : Number>(vararg val values: NumericArray<T>) {
+    val rowSize = this.values.size
+    val colSize = this.values.firstOrNull()?.length ?: 0
+
+    override fun toString(): String {
+        return Arrays.deepToString(this.values)
+    }
 }
 
-private fun sample1_5_3() {
-    val x = narrayOf(1.0, 2.0, 3.0)
-    val y = narrayOf(2.0, 4.0, 6.0)
-
-    println(x + y)
-    println(x - y)
-    println(x * y)
-    println(x / y)
-}
-
-private fun sample1_5_4() {
-    val x = matrixOf(narrayOf(1, 2), narrayOf(3, 4))
-    println(x)
-}
+fun <T : Number> matrixOf(vararg values: NumericArray<T>) = Matrix(*values)
