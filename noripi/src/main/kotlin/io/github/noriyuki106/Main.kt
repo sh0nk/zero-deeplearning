@@ -16,6 +16,22 @@
  */
 package io.github.noriyuki106
 
+import io.github.noriyuki106.numkt.div
+import io.github.noriyuki106.numkt.minus
+import io.github.noriyuki106.numkt.narrayOf
+import io.github.noriyuki106.numkt.plus
+import io.github.noriyuki106.numkt.times
+
 fun main(args: Array<String>) {
-    println("Hello World")
+    sample1_5_3()
+}
+
+private fun sample1_5_3() {
+    val x = narrayOf(1.0, 2.0, 3.0)
+    val y = narrayOf(2.0, 4.0, 6.0)
+
+    println(x + y)
+    println(x - y)
+    println(x * y)
+    println(x / y)
 }
