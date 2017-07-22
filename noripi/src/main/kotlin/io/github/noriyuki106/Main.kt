@@ -39,6 +39,10 @@ private fun sample1_5_3() {
 }
 
 private fun sample1_5_4() {
-    val x = matrixOf(narrayOf(1, 2), narrayOf(3, 4))
-    println(x)
+    val x = matrixOf(narrayOf(1.0, 2.0), narrayOf(3.0, 4.0))
+    val y = matrixOf(narrayOf(2.0, 4.0), narrayOf(6.0, 8.0))
+
+    println(x[1, 1])
+    println(x + y)
+    println(x - y)
 }
