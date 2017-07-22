@@ -1,0 +1,6 @@
+bpython
+ipython
+jupyter
+matplotlib
+numpy
+yapf
