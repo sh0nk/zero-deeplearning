@@ -29,7 +29,3 @@ fun compositePerceptron(bias: Double, weight1: Double, weight2: Double): (TwoDim
         }
     }
 }
-
-val perceptron(bias: Double, weight1: Double, weight2: Double) = (x1, x2) -> {
-
-}
