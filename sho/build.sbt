@@ -17,9 +17,9 @@ libraryDependencies  ++= Seq(
 
   // The visualization library is distributed separately as well.
   // It depends on LGPL code
-  "org.scalanlp" %% "breeze-viz" % "0.13.1",
+  "org.scalanlp" %% "breeze-viz" % "0.13.1"
 
-//  "com.quantifind" %% "wisp" % "0.0.4"
+  //  "com.quantifind" %% "wisp" % "0.0.4"
 )
 
 
