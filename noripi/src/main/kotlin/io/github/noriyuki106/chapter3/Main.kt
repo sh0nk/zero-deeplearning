@@ -16,30 +16,36 @@
  */
 package io.github.noriyuki106.chapter3
 
+import io.github.noriyuki106.extension.draw
 import io.github.noriyuki106.extension.truncate
+import io.github.noriyuki106.neural_network.relu
 import io.github.noriyuki106.neural_network.sigmoid
 import io.github.noriyuki106.neural_network.step
+import io.github.noriyuki106.numkt.matrixOf
+import io.github.noriyuki106.numkt.narrayOf
 
 fun main(args: Array<String>) {
-    step.draw(xRange = -5.0..5.0)
-    sigmoid.draw(xRange = -5.0..5.0)
+//    sample3_2()
+    sample3_3()
 }
 
-fun ((Double) -> Double).draw(xRange: ClosedFloatingPointRange<Double>, window: Double = 0.2) {
-    var targetX = mutableListOf(xRange.start)
-    var currentX = xRange.start
-    while (currentX <= xRange.endInclusive) {
-        currentX += window
-        targetX.add(currentX.truncate(2))
-    }
-    val targetY = targetX.map { this(it).truncate(3) }
-
-    val baseUrl = "https://chart.apis.google.com/chart?chs=300x300&chxt=x,y&cht=lxy&chds=a"
-    val xListString = targetX.joinToString(",")
-    val yListString = targetY.joinToString(",")
-    val graphXRange = (targetX.min() ?: 0 - 0.1) .. (targetX.max() ?: 0 + 0.1)
-    val graphYRange = (targetY.min() ?: 0 - 0.1) .. (targetY.max() ?: 0 + 0.1)
-
-
-    println("$baseUrl&chd=t:$xListString|$yListString&chxr=0,${graphXRange.start},${graphXRange.endInclusive}|1,${graphYRange.start},${graphYRange.endInclusive}")
+private fun sample3_2() {
+    step.draw(-5.0..5.0)
+    sigmoid.draw(-5.0..5.0)
+    relu.draw(-5.0..5.0)
 }
+
+private fun sample3_3() {
+    val A1 = matrixOf(narrayOf(1, 2), narrayOf(3, 4))
+    val B1 = matrixOf(narrayOf(5, 6), narrayOf(7, 8))
+    println(A1.shape) // (2, 2)
+    println(B1.shape) // (2, 2)
+    println(A1 * B1)
+
+    val A2 = matrixOf(narrayOf(1, 2, 3), narrayOf(4, 5, 6))
+    val B2 = matrixOf(narrayOf(1, 2), narrayOf(3, 4), narrayOf(5, 6))
+    println(A2.shape) // (2, 3)
+    println(B2.shape) // (3, 2)
+    println(A2 * B2)
+}
+

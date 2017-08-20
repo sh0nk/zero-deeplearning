@@ -5,47 +5,47 @@ package io.github.noriyuki106.numkt
 
 import java.util.Arrays
 
-class NumericArray<out T : Number>(val values: Array<out T>) {
+class NumericArray(val values: DoubleArray) {
     val length = this.values.size
 
     override fun toString(): String {
-        return Arrays.deepToString(this.values)
+        return this.values.toString()
     }
 
-    operator fun get(i: Int): T = this.values[i]
+    operator fun get(i: Int): Double = this.values[i]
 }
 
-fun <T : Number> narrayOf(vararg values: T) = NumericArray(values)
+fun narrayOf(vararg values: Double) = NumericArray(values)
 
-operator fun NumericArray<Double>.plus(that: NumericArray<Double>): NumericArray<Double> {
+operator fun NumericArray.plus(that: NumericArray): NumericArray {
     if (this.length != that.length) throw IllegalArgumentException()
-    return narrayOf(*this.values.mapIndexed { idx, v -> v + that.values[idx] }.toTypedArray())
+    return narrayOf(*this.values.mapIndexed { idx, v -> v + that.values[idx] }.toDoubleArray())
 }
-operator fun NumericArray<Double>.plus(that: Double): NumericArray<Double> = narrayOf(*this.values.map { it + that }.toTypedArray())
-operator fun NumericArray<Double>.plus(that: Int): NumericArray<Double> = narrayOf(*this.values.map { it + that }.toTypedArray())
+operator fun NumericArray.plus(that: Double): NumericArray = narrayOf(*this.values.map { it + that }.toDoubleArray())
+operator fun NumericArray.plus(that: Int): NumericArray = narrayOf(*this.values.map { it + that }.toDoubleArray())
 
-operator fun NumericArray<Double>.minus(that: NumericArray<Double>): NumericArray<Double> {
+operator fun NumericArray.minus(that: NumericArray): NumericArray {
     if (this.length != that.length) throw IllegalArgumentException()
-    return narrayOf(*this.values.mapIndexed { idx, v -> v - that.values[idx] }.toTypedArray())
+    return narrayOf(*this.values.mapIndexed { idx, v -> v - that.values[idx] }.toDoubleArray())
 }
 
-operator fun NumericArray<Double>.minus(that: Double): NumericArray<Double> = narrayOf(*this.values.map { it - that }.toTypedArray())
-operator fun NumericArray<Double>.minus(that: Int): NumericArray<Double> = narrayOf(*this.values.map { it - that }.toTypedArray())
+operator fun NumericArray.minus(that: Double): NumericArray = narrayOf(*this.values.map { it - that }.toDoubleArray())
+operator fun NumericArray.minus(that: Int): NumericArray = narrayOf(*this.values.map { it - that }.toDoubleArray())
 
-operator fun NumericArray<Double>.times(that: NumericArray<Double>): NumericArray<Double> {
+operator fun NumericArray.times(that: NumericArray): NumericArray {
     if (this.length != that.length) throw IllegalArgumentException()
-    return narrayOf(*this.values.mapIndexed { idx, v -> v * that.values[idx] }.toTypedArray())
+    return narrayOf(*this.values.mapIndexed { idx, v -> v * that.values[idx] }.toDoubleArray())
 }
 
-operator fun NumericArray<Double>.times(that: Double): NumericArray<Double> = narrayOf(*this.values.map { it * that }.toTypedArray())
-operator fun NumericArray<Double>.times(that: Int): NumericArray<Double> = narrayOf(*this.values.map { it * that }.toTypedArray())
+operator fun NumericArray.times(that: Double): NumericArray = narrayOf(*this.values.map { it * that }.toDoubleArray())
+operator fun NumericArray.times(that: Int): NumericArray = narrayOf(*this.values.map { it * that }.toDoubleArray())
 
-operator fun NumericArray<Double>.div(that: NumericArray<Double>): NumericArray<Double> {
+operator fun NumericArray.div(that: NumericArray): NumericArray {
     if (this.length != that.length) throw IllegalArgumentException()
-    return narrayOf(*this.values.mapIndexed { idx, v -> v / that.values[idx] }.toTypedArray())
+    return narrayOf(*this.values.mapIndexed { idx, v -> v / that.values[idx] }.toDoubleArray())
 }
 
-operator fun NumericArray<Double>.div(that: Double): NumericArray<Double> = narrayOf(*this.values.map { it / that }.toTypedArray())
-operator fun NumericArray<Double>.div(that: Int): NumericArray<Double> = narrayOf(*this.values.map { it / that }.toTypedArray())
+operator fun NumericArray.div(that: Double): NumericArray = narrayOf(*this.values.map { it / that }.toDoubleArray())
+operator fun NumericArray.div(that: Int): NumericArray = narrayOf(*this.values.map { it / that }.toDoubleArray())
 
-fun NumericArray<Double>.sum(): Double = this.values.sum()
+fun NumericArray.sum(): Double = this.values.sum()

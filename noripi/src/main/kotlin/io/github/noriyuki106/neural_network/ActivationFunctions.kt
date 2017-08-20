@@ -23,3 +23,7 @@ val sigmoid = fun (x: Double): Double {
 val step = fun (x: Double): Double {
     return if (x > 0) 1.0 else 0.0
 }
+
+val relu = fun (x: Double): Double {
+    return Math.max(0.0, x)
+}
