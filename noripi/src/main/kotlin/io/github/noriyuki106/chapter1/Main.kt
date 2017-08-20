@@ -28,7 +28,7 @@ fun main(args: Array<String>) {
     sample1_5_4()
 }
 
-fun sample1_5_3() {
+private fun sample1_5_3() {
     val x = narrayOf(1.0, 2.0, 3.0)
     val y = narrayOf(2.0, 4.0, 6.0)
 
@@ -38,7 +38,7 @@ fun sample1_5_3() {
     println(x / y)
 }
 
-fun sample1_5_4() {
+private fun sample1_5_4() {
     val x = matrixOf(narrayOf(1.0, 2.0), narrayOf(3.0, 4.0))
     val y = matrixOf(narrayOf(2.0, 4.0), narrayOf(6.0, 8.0))
 
