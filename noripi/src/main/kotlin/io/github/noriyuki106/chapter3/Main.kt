@@ -18,6 +18,9 @@ package io.github.noriyuki106.chapter3
 
 import io.github.noriyuki106.extension.draw
 import io.github.noriyuki106.extension.truncate
+import io.github.noriyuki106.neural_network.NeuralNetwork
+import io.github.noriyuki106.neural_network.NeuralNetworkLayer
+import io.github.noriyuki106.neural_network.identity
 import io.github.noriyuki106.neural_network.relu
 import io.github.noriyuki106.neural_network.sigmoid
 import io.github.noriyuki106.neural_network.step
@@ -27,7 +30,8 @@ import io.github.noriyuki106.numkt.times
 
 fun main(args: Array<String>) {
 //    sample3_2()
-    sample3_3()
+//    sample3_3()
+    sample3_4()
 }
 
 private fun sample3_2() {
@@ -48,5 +52,25 @@ private fun sample3_3() {
     println(A2.shape) // (2, 3)
     println(B2.shape) // (3, 2)
     println(A2 * B2)
+}
+
+private fun sample3_4() {
+    val network = NeuralNetwork(
+            NeuralNetworkLayer(
+                    weight = matrixOf(narrayOf(0.1, 0.3, 0.5), narrayOf(0.2, 0.4, 0.6)),
+                    bias = narrayOf(0.1, 0.2, 0.3)
+            ),
+            NeuralNetworkLayer(
+                    weight = matrixOf(narrayOf(0.1, 0.4), narrayOf(0.2, 0.5), narrayOf(0.3, 0.6)),
+                    bias = narrayOf(0.1, 0.2)
+            ),
+            NeuralNetworkLayer(
+                    weight = matrixOf(narrayOf(0.1, 0.3), narrayOf(0.2, 0.4)),
+                    bias = narrayOf(0.1, 0.2),
+                    activationFunction = identity
+            )
+    )
+
+    println(network(narrayOf(1.0, 0.5)))
 }
 

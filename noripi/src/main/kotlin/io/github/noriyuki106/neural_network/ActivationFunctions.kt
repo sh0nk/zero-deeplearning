@@ -16,14 +16,14 @@
  */
 package io.github.noriyuki106.neural_network
 
-val sigmoid = fun (x: Double): Double {
-    return 1.0 / (1.0 + Math.exp(-x))
-}
+import io.github.noriyuki106.numkt.NumericArray
+import io.github.noriyuki106.numkt.narrayOf
 
-val step = fun (x: Double): Double {
-    return if (x > 0) 1.0 else 0.0
-}
+typealias ActivationFunction = (Double) -> Double
 
-val relu = fun (x: Double): Double {
-    return Math.max(0.0, x)
-}
+val sigmoid = fun (x: Double): Double = 1.0 / (1.0 + Math.exp(-x))
+val step = fun (x: Double): Double = if (x > 0) 1.0 else 0.0
+val relu = fun (x: Double): Double = Math.max(0.0, x)
+val identity = fun (x: Double): Double = x
+
+fun NumericArray.activateBy(f: ActivationFunction) = narrayOf(*this.values.map { f(it) }.toDoubleArray())
