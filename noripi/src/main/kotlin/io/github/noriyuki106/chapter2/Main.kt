@@ -17,7 +17,6 @@
 package io.github.noriyuki106.chapter2
 
 import io.github.noriyuki106.numkt.narrayOf
-import io.github.noriyuki106.numkt.sum
 import io.github.noriyuki106.numkt.times
 
 fun main(args: Array<String>) {
@@ -42,7 +41,7 @@ private class Perceptron(
     operator fun invoke(x1: Double, x2: Double): Double {
         val weights = narrayOf(this.weight1, this.weight2)
         val values = narrayOf(this.p1?.let { it(x1, x2) } ?: x1, this.p2?.let { it(x1, x2) } ?: x2)
-        val result = this.bias + (weights * values).sum()
+        val result = this.bias + weights * values
         return if (result <= 0) 0.0 else 1.0
     }
 

@@ -3,7 +3,9 @@
  */
 package io.github.noriyuki106.numkt
 
+import kotlinx.coroutines.experimental.yield
 import java.util.Arrays
+import kotlin.coroutines.experimental.buildIterator
 
 class Matrix(val values: Array<out NumericArray>) {
     val rowSize = this.values.size
@@ -17,12 +19,16 @@ class Matrix(val values: Array<out NumericArray>) {
 
     operator fun get(i: Int, j: Int): Double = this.values[i][j]
 
-    fun getRow(i: Int): NumericArray {
-        return this.values[i]
+    fun rowIterator(): Iterator<NumericArray> = buildIterator {
+        (0 until this@Matrix.rowSize).forEach {
+            yield(this@Matrix.values[it])
+        }
     }
 
-    fun getCol(j: Int): NumericArray {
-        return NumericArray(this.values.map { it[j] }.toDoubleArray())
+    fun colIterator(): Iterator<NumericArray> = buildIterator {
+        (0 until this@Matrix.colSize).forEach { idx ->
+            yield(narrayOf(*this@Matrix.values.map { it[idx] }.toDoubleArray()))
+        }
     }
 }
 
@@ -52,3 +58,18 @@ operator fun Matrix.times(that: Int): Matrix = matrixOf(*this.values.map { it * 
 operator fun Matrix.div(that: Double): Matrix = matrixOf(*this.values.map { it / that }.toTypedArray())
 operator fun Matrix.div(that: Int): Matrix = matrixOf(*this.values.map { it / that }.toTypedArray())
 
+operator fun Matrix.times(that: Matrix): Matrix {
+    if (this.rowSize != that.colSize || this.colSize != that.rowSize) throw IllegalArgumentException()
+
+    var rows = mutableListOf<NumericArray>()
+    this.rowIterator().forEach { row ->
+        var newRow = mutableListOf<Double>()
+        that.colIterator().forEach { col ->
+            newRow.add(row * col)
+        }
+
+        rows.add(narrayOf(*newRow.toDoubleArray()))
+    }
+
+    return matrixOf(*rows.toTypedArray())
+}

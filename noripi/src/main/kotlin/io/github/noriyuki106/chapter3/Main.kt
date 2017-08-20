@@ -23,6 +23,7 @@ import io.github.noriyuki106.neural_network.sigmoid
 import io.github.noriyuki106.neural_network.step
 import io.github.noriyuki106.numkt.matrixOf
 import io.github.noriyuki106.numkt.narrayOf
+import io.github.noriyuki106.numkt.times
 
 fun main(args: Array<String>) {
 //    sample3_2()
