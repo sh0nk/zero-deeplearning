@@ -16,6 +16,9 @@
  */
 package io.github.noriyuki106.numkt.function
 
+import io.github.noriyuki106.numkt.NumericArray
+import io.github.noriyuki106.numkt.narrayOf
+
 typealias NumericBiFunction = (Double, Double) -> Double
 
 fun NumericBiFunction.curryByFirst(): (Double) -> NumericFunction {
@@ -32,4 +35,11 @@ fun NumericBiFunction.curryBySecond(): (Double) -> NumericFunction {
             return this@curryBySecond(x1, x2)
         }
     }
+}
+
+fun NumericBiFunction.numericalGradient(x: NumericArray): NumericArray {
+    return narrayOf(
+            this.curryBySecond()(x[1]).numericalDiff(x[0]),
+            this.curryBySecond()(x[0]).numericalDiff(x[1])
+    )
 }

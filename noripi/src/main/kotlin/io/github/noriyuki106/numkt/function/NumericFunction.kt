@@ -38,7 +38,7 @@ fun NumericFunction.draw(xRange: ClosedFloatingPointRange<Double>, window: Doubl
     println("$baseUrl&chd=t:$xListString|$yListString&chxr=0,${graphXRange.start},${graphXRange.endInclusive}|1,${graphYRange.start},${graphYRange.endInclusive}")
 }
 
-fun NumericFunction.numericDiff(x: Double): Double {
+fun NumericFunction.numericalDiff(x: Double): Double {
     val diff = 0.0001
     return (this(x + diff) - this(x - diff)) / (2 * diff)
 }
