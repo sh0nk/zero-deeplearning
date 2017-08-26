@@ -46,8 +46,11 @@ class NumericArray(private val values: DoubleArray) {
     operator fun div(that: Int): NumericArray = narrayOf(*this.values.map { it / that }.toDoubleArray())
 
     fun map(transformer: (Double) -> Double): NumericArray = narrayOf(*this.values.map { transformer(it) }.toDoubleArray())
+    fun mapIndexed(transformer: (Int, Double) -> Double): NumericArray = narrayOf(*this.values.mapIndexed { index, value -> transformer(index, value) }.toDoubleArray())
+
     fun sum(): Double = this.values.sum()
     fun sumBy(transformer: (Double) -> Double): Double = this.values.sumByDouble { transformer(it) }
+
     fun max(): Double = this.values.max() ?: 0.0
 }
 

@@ -14,7 +14,7 @@
  *
  * @author Noriyuki Ishida
  */
-package io.github.noriyuki106.chapter1
+package io.github.noriyuki106.main
 
 import io.github.noriyuki106.numkt.div
 import io.github.noriyuki106.numkt.matrixOf

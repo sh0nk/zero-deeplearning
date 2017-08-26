@@ -14,7 +14,7 @@
  *
  * @author Noriyuki Ishida
  */
-package io.github.noriyuki106.chapter3
+package io.github.noriyuki106.main
 
 //import io.github.noriyuki106.data.Mnist
 import io.github.noriyuki106.data.Mnist
@@ -83,12 +83,12 @@ private fun sample3_4() {
     println(network(narrayOf(1.0, 0.5)))
 }
 
-fun sample3_5() {
+private fun sample3_5() {
     println(narrayOf(0.3, 2.9, 4.0).activateBy(softmax))
     println(narrayOf(1010, 1000, 990).activateBy(softmax))
 }
 
-fun sample3_6() {
+private fun sample3_6() {
     val mnist = Mnist()
     (0 until 10).forEach {
         mnist[it].print()
