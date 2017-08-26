@@ -20,10 +20,12 @@ import io.github.noriyuki106.extension.draw
 import io.github.noriyuki106.extension.truncate
 import io.github.noriyuki106.neural_network.NeuralNetwork
 import io.github.noriyuki106.neural_network.NeuralNetworkLayer
+import io.github.noriyuki106.neural_network.activateBy
 import io.github.noriyuki106.neural_network.identity
 import io.github.noriyuki106.neural_network.relu
 import io.github.noriyuki106.neural_network.sigmoid
 import io.github.noriyuki106.neural_network.step
+import io.github.noriyuki106.neural_network.toActivationFunction
 import io.github.noriyuki106.numkt.matrixOf
 import io.github.noriyuki106.numkt.narrayOf
 import io.github.noriyuki106.numkt.times
@@ -31,7 +33,8 @@ import io.github.noriyuki106.numkt.times
 fun main(args: Array<String>) {
 //    sample3_2()
 //    sample3_3()
-    sample3_4()
+//    sample3_4()
+    sample3_5()
 }
 
 private fun sample3_2() {
@@ -67,10 +70,14 @@ private fun sample3_4() {
             NeuralNetworkLayer(
                     weight = matrixOf(narrayOf(0.1, 0.3), narrayOf(0.2, 0.4)),
                     bias = narrayOf(0.1, 0.2),
-                    activationFunction = identity
+                    activationFunction = identity.toActivationFunction()
             )
     )
 
     println(network(narrayOf(1.0, 0.5)))
+}
+
+fun sample3_5() {
+    narrayOf(0.3, 2.9, 4.0).activateBy(softmax)
 }
 

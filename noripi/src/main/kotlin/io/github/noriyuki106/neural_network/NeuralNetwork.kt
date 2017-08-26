@@ -28,7 +28,9 @@ class NeuralNetwork(vararg private val layers: NeuralNetworkLayer) {
     }
 }
 
-data class NeuralNetworkLayer(val weight: Matrix, val bias: NumericArray, val activationFunction: ActivationFunction = sigmoid) {
+data class NeuralNetworkLayer(val weight: Matrix,
+                              val bias: NumericArray,
+                              val activationFunction: ActivationFunction = sigmoid.toActivationFunction()) {
     operator fun invoke(input: NumericArray): NumericArray {
         // a1 = 1 * b1 + x1 * w11 + x2 * w21
         // a2 = 1 * b2 + x1 * w12 + x2 * w22
