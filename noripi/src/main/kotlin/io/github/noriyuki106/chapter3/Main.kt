@@ -16,8 +16,11 @@
  */
 package io.github.noriyuki106.chapter3
 
+//import io.github.noriyuki106.data.Mnist
+import io.github.noriyuki106.data.Mnist
+import io.github.noriyuki106.extension.chunk
 import io.github.noriyuki106.extension.draw
-import io.github.noriyuki106.extension.truncate
+import io.github.noriyuki106.extension.toUnsigned
 import io.github.noriyuki106.neural_network.NeuralNetwork
 import io.github.noriyuki106.neural_network.NeuralNetworkLayer
 import io.github.noriyuki106.neural_network.activateBy
@@ -30,12 +33,14 @@ import io.github.noriyuki106.neural_network.toActivationFunction
 import io.github.noriyuki106.numkt.matrixOf
 import io.github.noriyuki106.numkt.narrayOf
 import io.github.noriyuki106.numkt.times
+import java.util.Arrays
 
 fun main(args: Array<String>) {
 //    sample3_2()
 //    sample3_3()
 //    sample3_4()
-    sample3_5()
+//    sample3_5()
+    sample3_6()
 }
 
 private fun sample3_2() {
@@ -83,3 +88,10 @@ fun sample3_5() {
     println(narrayOf(1010, 1000, 990).activateBy(softmax))
 }
 
+fun sample3_6() {
+    val mnist = Mnist()
+    (0 until 10).forEach {
+        mnist[it].print()
+        println()
+    }
+}
