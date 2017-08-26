@@ -1,0 +1,22 @@
+apply plugin: 'kotlin'
+apply plugin: 'idea'
+
+repositories {
+    jcenter()
+}
+
+buildscript {
+    repositories {
+        jcenter()
+        maven { setUrl("https://repo.maven.apache.org/maven2") }
+        maven { setUrl("https://repo.gradle.org/gradle/repo") }
+    }
+
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.1.4"
+    }
+}
+
+dependencies {
+    compile "org.jetbrains.kotlinx:kotlinx-coroutines-core:0.18"
+}
