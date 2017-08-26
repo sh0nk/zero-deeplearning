@@ -16,16 +16,19 @@
  */
 package io.github.noriyuki106.main
 
-import io.github.noriyuki106.extension.draw
-import io.github.noriyuki106.extension.numericDiff
+import io.github.noriyuki106.numkt.function.draw
+import io.github.noriyuki106.numkt.function.numericDiff
 import io.github.noriyuki106.neural_network.crossEntropyError
 import io.github.noriyuki106.neural_network.meanSquaredError
+import io.github.noriyuki106.numkt.function.curryByFirst
+import io.github.noriyuki106.numkt.function.curryBySecond
 import io.github.noriyuki106.numkt.narrayOf
 
 fun main(args: Array<String>) {
 //    sample4_2_1()
 //    sample4_2_2()
-    sample4_3_2()
+//    sample4_3_2()
+    sample4_3_3()
 }
 
 private fun sample4_2_1() {
@@ -48,9 +51,16 @@ private fun sample4_2_2() {
 }
 
 private fun sample4_3_2() {
-    val function1 = fun (x: Double): Double = 0.01 * x * x + 0.1 * x
+    val function = fun (x: Double): Double = 0.01 * x * x + 0.1 * x
 
-    function1.draw(0.0..20.0)
-    println(function1.numericDiff(5.0))
-    println(function1.numericDiff(10.0))
+    function.draw(0.0..20.0)
+    println(function.numericDiff(5.0))
+    println(function.numericDiff(10.0))
+}
+
+private fun sample4_3_3() {
+    val function = fun (x1: Double, x2: Double): Double = x1 * x1 + x2 * x2
+
+    println(function.curryBySecond()(4.0).numericDiff(3.0))
+    println(function.curryByFirst()(3.0).numericDiff(4.0))
 }

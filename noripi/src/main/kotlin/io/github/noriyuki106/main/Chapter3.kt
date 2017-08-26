@@ -19,7 +19,7 @@ package io.github.noriyuki106.main
 //import io.github.noriyuki106.data.Mnist
 import io.github.noriyuki106.data.Mnist
 import io.github.noriyuki106.extension.chunk
-import io.github.noriyuki106.extension.draw
+import io.github.noriyuki106.numkt.function.draw
 import io.github.noriyuki106.extension.toUnsigned
 import io.github.noriyuki106.neural_network.NeuralNetwork
 import io.github.noriyuki106.neural_network.NeuralNetworkLayer

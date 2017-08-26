@@ -14,7 +14,9 @@
  *
  * @author Noriyuki Ishida
  */
-package io.github.noriyuki106.extension
+package io.github.noriyuki106.numkt.function
+
+import io.github.noriyuki106.extension.truncate
 
 typealias NumericFunction = (Double) -> Double
 
