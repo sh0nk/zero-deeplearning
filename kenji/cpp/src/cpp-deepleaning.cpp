@@ -13,9 +13,8 @@ int main() {
 
   Network network;
   network.loadDummyWeight();
-  std::cout << "network" << std::endl;
   const Eigen::MatrixXd y = network.forward(X);
-  std::cout << "y = " << y << std::endl;
+  std::cout << "y = " << y << std::endl; // 0.406259 0.593741
 
   return 0;
 }

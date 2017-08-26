@@ -11,7 +11,7 @@
 namespace functions {
 
 Eigen::MatrixXd sigmoid(const Eigen::MatrixXd &X) {
-  return 1.0 / (1.0 + X.exp().array()).array();
+  return 1.0 / (1.0 + (X.array() * -1.0).exp());
 }
 
 Eigen::MatrixXd softmax(const Eigen::MatrixXd &X) {
