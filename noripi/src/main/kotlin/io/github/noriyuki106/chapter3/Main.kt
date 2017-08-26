@@ -24,6 +24,7 @@ import io.github.noriyuki106.neural_network.activateBy
 import io.github.noriyuki106.neural_network.identity
 import io.github.noriyuki106.neural_network.relu
 import io.github.noriyuki106.neural_network.sigmoid
+import io.github.noriyuki106.neural_network.softmax
 import io.github.noriyuki106.neural_network.step
 import io.github.noriyuki106.neural_network.toActivationFunction
 import io.github.noriyuki106.numkt.matrixOf
@@ -78,6 +79,7 @@ private fun sample3_4() {
 }
 
 fun sample3_5() {
-    narrayOf(0.3, 2.9, 4.0).activateBy(softmax)
+    println(narrayOf(0.3, 2.9, 4.0).activateBy(softmax))
+    println(narrayOf(1010, 1000, 990).activateBy(softmax))
 }
 

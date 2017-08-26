@@ -17,9 +17,7 @@
 package io.github.noriyuki106.neural_network
 
 import io.github.noriyuki106.numkt.NumericArray
-import io.github.noriyuki106.numkt.map
 import io.github.noriyuki106.numkt.narrayOf
-import io.github.noriyuki106.numkt.sum
 
 typealias ActivationFunction = (NumericArray) -> NumericArray
 
@@ -27,9 +25,7 @@ val sigmoid = fun (x: Double): Double = 1.0 / (1.0 + Math.exp(-x))
 val step = fun (x: Double): Double = if (x > 0) 1.0 else 0.0
 val relu = fun (x: Double): Double = Math.max(0.0, x)
 val identity = fun (x: Double): Double = x
-val softmax = fun (n: NumericArray): NumericArray = n.map { it / n.sum() }
+val softmax = fun (n: NumericArray): NumericArray = n.map { Math.exp(it - n.max()) / n.sumBy { Math.exp(it - n.max()) }}
 
 fun NumericArray.activateBy(f: ActivationFunction) = f(this)
-fun ((Double) -> Double).toActivationFunction() = fun (n: NumericArray): NumericArray {
-    return narrayOf(*n.values.map { this(it) }.toDoubleArray())
-}
+fun ((Double) -> Double).toActivationFunction() = fun (n: NumericArray): NumericArray = n.map { this(it) }
