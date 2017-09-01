@@ -14,9 +14,13 @@
  *
  * @author Noriyuki Ishida
  */
-package io.github.noriyuki106.extension
+package io.github.noriyuki106.numkt.function
 
-fun ((Double) -> Double).draw(xRange: ClosedFloatingPointRange<Double>, window: Double = 0.2) {
+import io.github.noriyuki106.extension.truncate
+
+typealias NumericFunction = (Double) -> Double
+
+fun NumericFunction.draw(xRange: ClosedFloatingPointRange<Double>, window: Double = 0.2) {
     var targetX = mutableListOf(xRange.start)
     var currentX = xRange.start
     while (currentX <= xRange.endInclusive) {
@@ -32,4 +36,9 @@ fun ((Double) -> Double).draw(xRange: ClosedFloatingPointRange<Double>, window: 
     val graphYRange = (targetY.min() ?: 0 - 0.1) .. (targetY.max() ?: 0 + 0.1)
 
     println("$baseUrl&chd=t:$xListString|$yListString&chxr=0,${graphXRange.start},${graphXRange.endInclusive}|1,${graphYRange.start},${graphYRange.endInclusive}")
+}
+
+fun NumericFunction.numericalDiff(x: Double): Double {
+    val diff = 0.0001
+    return (this(x + diff) - this(x - diff)) / (2 * diff)
 }

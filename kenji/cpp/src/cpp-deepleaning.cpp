@@ -5,15 +5,16 @@
 #include <iostream>
 #include <Eigen/Core>
 #include <unsupported/Eigen/MatrixFunctions>
+#include "Network.h"
 
-int main(int argc, char *argv[]) {
-  const double pi = std::acos(-1.0);
-  Eigen::MatrixXd A(3, 3);
-  A << 0, -pi / 4, 0,
-      pi / 4, 0, 0,
-      0, 0, 0;
-  std::cout << "test" << std::endl;
-  std::cout << "The matrix A is:\n" << A << "\n\n";
-  std::cout << "The matrix exponential of A is:\n" << A.exp() << "\n\n";
+int main() {
+  Eigen::MatrixXd X(1, 2);
+  X << 1.0, 0.5;
+
+  Network network;
+  network.loadDummyWeight();
+  const Eigen::MatrixXd y = network.forward(X);
+  std::cout << "y = " << y << std::endl; // 0.406259 0.593741
+
   return 0;
 }

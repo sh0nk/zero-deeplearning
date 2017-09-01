@@ -14,7 +14,7 @@
  *
  * @author Noriyuki Ishida
  */
-package io.github.noriyuki106.chapter2
+package io.github.noriyuki106.main
 
 import io.github.noriyuki106.numkt.narrayOf
 import io.github.noriyuki106.numkt.times
