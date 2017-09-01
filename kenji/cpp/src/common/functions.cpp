@@ -7,7 +7,6 @@
 
 namespace functions {
 
-/** ステップ関数 */
 Eigen::MatrixXd step_function(const Eigen::MatrixXd &X) {
   return (X.array() > 0.0).cast<double>();
 }
@@ -25,7 +24,7 @@ Eigen::MatrixXd softmax(const Eigen::MatrixXd &X) {
 }
 
 Eigen::MatrixXd relu(const Eigen::MatrixXd &X) {
-  return (X.array() > 0).select(X, 0);
+  return (X.array() > 0).select(X, 0); // (X > 0 ? X : 0)
   // same as above
   // return X.array().max(Eigen::MatrixXd::Zero(X.rows(), X.cols()).array());
 }

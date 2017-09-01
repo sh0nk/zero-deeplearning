@@ -7,13 +7,23 @@
 
 namespace utils {
 
-std::vector<double> convertEigenToStdVector(const Eigen::MatrixXd &X) {
-  std::vector<double> x(X.rows() * X.cols());
-  Eigen::Map<Eigen::MatrixXd>(&x[0], X.rows(), X.cols()) = X;
-  return x;
+/**
+ * Convert Eigen Matrix to std::vector.
+ */
+std::vector<double> convertEigenToStdVector(const Eigen::MatrixXd &X);
+
+/**
+ * Return evenly spaced values within a given interval. Migrate from `numpy.arange`.
+ * @param start Start of interval.
+ * @param stop End of interval.
+ * @param step Spacing between values.
+ * @return Array of evenly spaced values.
+ */
+Eigen::MatrixXd arange(const double start, const double stop, const double step);
+
 }
 
-Eigen::MatrixXd arange(const double start, const double stop, const double step) {
+Eigen::MatrixXd utils::arange(const double start, const double stop, const double step) {
   const int size = (stop - start) / step;
   Eigen::MatrixXd X(1, size);
 
@@ -24,6 +34,10 @@ Eigen::MatrixXd arange(const double start, const double stop, const double step)
   return X;
 }
 
+std::vector<double> utils::convertEigenToStdVector(const Eigen::MatrixXd &X) {
+  std::vector<double> x(X.rows() * X.cols());
+  Eigen::Map<Eigen::MatrixXd>(&x[0], X.rows(), X.cols()) = X;
+  return x;
 }
 
 #endif //CPP_DEEPLEARNING_UTILS_H
