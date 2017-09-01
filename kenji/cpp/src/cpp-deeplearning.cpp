@@ -6,6 +6,7 @@
 #include <Eigen/Core>
 #include <unsupported/Eigen/MatrixFunctions>
 #include "Network.h"
+#include "common/functions.h"
 
 int main() {
   Eigen::MatrixXd X(1, 2);

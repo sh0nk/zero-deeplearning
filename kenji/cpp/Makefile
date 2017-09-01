@@ -3,12 +3,12 @@ UNAME := $(shell uname)
 build:
 	-mkdir build
 	cd build &&\
-		cmake -DBUILD_SHARED_LIBS=OFF -DENABLE_INTEGRATION_TEST=ON -DBUILD_TESTS=ON -DBUILD_TOOLS=ON -DCMAKE_BUILD_TYPE=Release .. &&\
+		cmake -DBUILD_SHARED_LIBS=ON -DENABLE_INTEGRATION_TEST=ON -DBUILD_TESTS=ON -DBUILD_TOOLS=ON -DCMAKE_BUILD_TYPE=Release .. &&\
 		make -j 8
 .PHONY: build
 
 run:
-	./build/src/cpp-deepleaning
+	./build/src/cpp-deeplearning
 .PHONY: run
 
 test:

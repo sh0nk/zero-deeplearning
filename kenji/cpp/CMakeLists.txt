@@ -12,9 +12,9 @@ if (NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE "Debug")
 endif ()
 
-OPTION(BUILD_SHARED_LIBS "Set to OFF to build static libraries" OFF)
+OPTION(BUILD_SHARED_LIBS "Set to OFF to build static libraries" ON)
 OPTION(USE_OPENMP "Enable/Disable OpenMP" ON)
-OPTION(BUILD_TESTS "Set to OFF to not compile tests" OFF)
+OPTION(BUILD_TESTS "Set to OFF to not compile tests" ON)
 
 OPTION(DISABLE_OPTIMIZATION_IN_RELEASE "Disable optimization in release" OFF)
 
@@ -203,7 +203,7 @@ add_subdirectory(src)
 # ----------------------------------------------------------------------------
 if (BUILD_TESTS)
     enable_testing()
-    # add_subdirectory(test)
+    add_subdirectory(test)
 endif ()
 
 # ----------------------------------------------------------------------------
