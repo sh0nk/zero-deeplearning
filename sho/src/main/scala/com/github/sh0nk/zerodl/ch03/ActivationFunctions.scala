@@ -15,12 +15,13 @@ object ActivationFunctions {
   def softmax(x: DenseVector[Double]): DenseVector[Double] = {
     val c = x.reduce((a, b) => math.max(a, b))
     val exp = x.map(v => math.exp(v - c))
-    val sum_exp = x.reduce(_ + _)
+    val sum_exp = exp.reduce(_ + _)
     exp.map(_ / sum_exp)
   }
 
   def main(args: Array[String]): Unit = {
     println(ActivationFunctions.step(new DenseVector[Double](Array[Double](2, 1, 0, -1, -2))))
+    println(ActivationFunctions.softmax(new DenseVector[Double](Array[Double](2, 1, 0, -1, -2))))
   }
 }
 
