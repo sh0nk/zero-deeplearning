@@ -9,14 +9,17 @@
 
 namespace functions {
 
-/** ステップ関数 */
+/** Step (ステップ関数) */
 Eigen::MatrixXd step_function(const Eigen::MatrixXd &X);
 
-/** シグモイド関数 */
+/** Sigmoid (シグモイド関数) */
 Eigen::MatrixXd sigmoid(const Eigen::MatrixXd &X);
 
-/** ソフトマックス */
+/** Softmax (ソフトマックス関数) */
 Eigen::MatrixXd softmax(const Eigen::MatrixXd &X);
+
+/** ReLU (ReLU関数) */
+Eigen::MatrixXd relu(const Eigen::MatrixXd &X);
 
 }
 

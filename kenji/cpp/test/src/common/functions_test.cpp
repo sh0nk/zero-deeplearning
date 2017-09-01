@@ -42,3 +42,13 @@ TEST_CASE("functions#softmax", "[functions]") {
       0.455054, 0.276004;
   CHECK(functions::softmax(A).isApprox(E, 1e-4));
 }
+
+TEST_CASE("functions#relu", "[functions]") {
+  Eigen::MatrixXd A(2, 2);
+  A << -1.0, 0.5,
+      2.0, -1.5;
+  Eigen::MatrixXd E(2, 2);
+  E << 0.0, 0.5,
+      2.0, 0.0;
+  CHECK(functions::relu(A).isApprox(E, 1e-4));
+}

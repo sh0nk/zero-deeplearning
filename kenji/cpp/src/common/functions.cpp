@@ -24,4 +24,10 @@ Eigen::MatrixXd softmax(const Eigen::MatrixXd &X) {
   return Y;
 }
 
+Eigen::MatrixXd relu(const Eigen::MatrixXd &X) {
+  return (X.array() > 0).select(X, 0);
+  // same as above
+  // return X.array().max(Eigen::MatrixXd::Zero(X.rows(), X.cols()).array());
+}
+
 }

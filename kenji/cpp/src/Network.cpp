@@ -6,7 +6,20 @@
 #include <iostream>
 #include "common/functions.h"
 
-Eigen::MatrixXd Network::forward(const Eigen::MatrixXd &X) {
+Network::Network() {}
+
+Network::Network(const std::vector<Eigen::MatrixXd> &Ws, const std::vector<Eigen::MatrixXd> &Bs) :
+    Ws(Ws), Bs(Bs) {};
+
+void Network::setWeight(const std::vector<Eigen::MatrixXd> &Ws) {
+  this->Ws = Ws;
+}
+
+void Network::setBias(const std::vector<Eigen::MatrixXd> &Bs) {
+  this->Bs = Bs;
+}
+
+Eigen::MatrixXd Network::forward(const Eigen::MatrixXd &X) const {
   std::cout << "X = " << X << std::endl;
 
   Eigen::MatrixXd Ai;

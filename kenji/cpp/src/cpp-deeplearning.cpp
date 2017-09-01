@@ -3,19 +3,55 @@
 //
 
 #include <iostream>
+#include <thread>
 #include <Eigen/Core>
 #include <unsupported/Eigen/MatrixFunctions>
-#include "Network.h"
+
+#include "matplotlibcpp.h"
+namespace plt = matplotlibcpp;
+
 #include "common/functions.h"
+#include "common/utils.h"
+
+void step_function() {
+  const Eigen::MatrixXd A = utils::arange(-5.0, 5.0, 0.1);
+  const std::vector<double> a = utils::convertEigenToStdVector(A);
+
+  const Eigen::MatrixXd Y = functions::step_function(A);
+  const std::vector<double> y = utils::convertEigenToStdVector(Y);
+
+  plt::plot(a, y);
+  plt::ylim(-0.1, 1.1);
+  plt::show();
+}
+
+void sigmoid() {
+  const Eigen::MatrixXd A = utils::arange(-5.0, 5.0, 0.1);
+  const std::vector<double> a = utils::convertEigenToStdVector(A);
+
+  const Eigen::MatrixXd Y = functions::sigmoid(A);
+  const std::vector<double> y = utils::convertEigenToStdVector(Y);
+
+  plt::plot(a, y);
+  plt::ylim(-0.1, 1.1);
+  plt::show();
+}
+
+void relu() {
+  const Eigen::MatrixXd A = utils::arange(-5.0, 5.0, 0.1);
+  const std::vector<double> a = utils::convertEigenToStdVector(A);
+
+  const Eigen::MatrixXd Y = functions::relu(A);
+  const std::vector<double> y = utils::convertEigenToStdVector(Y);
+
+  plt::plot(a, y);
+  plt::ylim(-1.0, 5.5);
+  plt::show();
+}
 
 int main() {
-  Eigen::MatrixXd X(1, 2);
-  X << 1.0, 0.5;
-
-  Network network;
-  network.loadDummyWeight();
-  const Eigen::MatrixXd y = network.forward(X);
-  std::cout << "y = " << y << std::endl; // 0.406259 0.593741
-
+  step_function();
+  sigmoid();
+  relu();
   return 0;
 }

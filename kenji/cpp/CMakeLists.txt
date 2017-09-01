@@ -2,7 +2,7 @@ include(CMakeToolsHelpers OPTIONAL) # for Visual Studio Code
 cmake_minimum_required(VERSION 3.3.0 FATAL_ERROR)
 
 # Make PROJECT_SOURCE_DIR, PROJECT_BINARY_DIR, and PROJECT_NAME available.
-project(cpp-deep-learning CXX)
+project(cpp-deeplearning CXX)
 
 #------------------------------------------------------
 # Build type
@@ -15,6 +15,7 @@ endif ()
 OPTION(BUILD_SHARED_LIBS "Set to OFF to build static libraries" ON)
 OPTION(USE_OPENMP "Enable/Disable OpenMP" ON)
 OPTION(BUILD_TESTS "Set to OFF to not compile tests" ON)
+OPTION(WITHOUT_NUMPY "Set to ON not to use numpy" ON)
 
 OPTION(DISABLE_OPTIMIZATION_IN_RELEASE "Disable optimization in release" OFF)
 
@@ -57,6 +58,15 @@ endif ()
 
 # Eigen
 pkg_search_module(Eigen3 REQUIRED eigen3)
+
+# Python
+find_package(PythonLibs 2.7)
+include_directories(${PYTHON_INCLUDE_DIRS})
+if (WITHOUT_NUMPY)
+  add_definitions(-DWITHOUT_NUMPY)
+else ()
+  include_directories(/usr/local/lib/python2.7/site-packages/numpy/core/include)
+endif ()
 
 # ----------------------------------------------------------------------------
 #   Uninstall target, for "make uninstall"
@@ -196,7 +206,6 @@ endif ()
 # DIRS
 #------------------------------------------------
 add_subdirectory(src)
-# add_subdirectory(script)
 
 # ----------------------------------------------------------------------------
 #   Testing
