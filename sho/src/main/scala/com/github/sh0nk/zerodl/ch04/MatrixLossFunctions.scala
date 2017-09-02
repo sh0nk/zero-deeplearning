@@ -7,7 +7,7 @@ object MatrixLossFunctions {
   def crossEntropyError(y: DenseMatrix[Double], t: DenseVector[Int]): Double = {
     val batchSize = y.rows
 
-    (0 until y.rows).map { r =>
+    -1.0 * (0 until y.rows).map { r =>
       log(y(r, t(r)))
     }.sum / batchSize
   }
