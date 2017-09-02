@@ -34,3 +34,14 @@ fun NumericMultivariableFunction.numericalGradient(x: NumericArray): NumericArra
     }
 }
 
+tailrec fun NumericMultivariableFunction.getMinimumValueByGradientMethod(initialValue: NumericArray, learningRate: Double = 0.01, numOfSteps: Int = 100): NumericArray {
+    return if (numOfSteps == 0) {
+        initialValue
+    } else {
+        this.getMinimumValueByGradientMethod(
+                initialValue = initialValue - this.numericalGradient(initialValue) * learningRate,
+                learningRate = learningRate,
+                numOfSteps = numOfSteps - 1
+        )
+    }
+}
