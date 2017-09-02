@@ -16,10 +16,10 @@
  */
 package io.github.noriyuki106.neural_network
 
+import io.github.noriyuki106.numkt.Either
 import io.github.noriyuki106.numkt.Matrix
 import io.github.noriyuki106.numkt.NumericArray
 import io.github.noriyuki106.numkt.matrixOf
-import io.github.noriyuki106.numkt.plus
 import io.github.noriyuki106.numkt.times
 
 class NeuralNetwork(vararg private val layers: NeuralNetworkLayer) {
@@ -28,14 +28,41 @@ class NeuralNetwork(vararg private val layers: NeuralNetworkLayer) {
     }
 }
 
-data class NeuralNetworkLayer(val weight: Matrix,
-                              val bias: NumericArray,
-                              val activationFunction: ActivationFunction = sigmoid.toActivationFunction()) {
+class NeuralNetworkLayer {
+    private val weight: Matrix
+    private val activationFunction: ActivationFunction
+    private val bias: Either<NumericArray, Double>
+
+    constructor(weight: Matrix,
+                bias: NumericArray,
+                activationFunction: ActivationFunction = sigmoid.toActivationFunction()) {
+
+        this.weight = weight
+        this.activationFunction = activationFunction
+        this.bias = Either.left(bias)
+    }
+
+    constructor(weight: Matrix,
+                bias: Double,
+                activationFunction: ActivationFunction = sigmoid.toActivationFunction()) {
+
+        this.weight = weight
+        this.bias = Either.right(bias)
+        this.activationFunction = activationFunction
+    }
+
     operator fun invoke(input: NumericArray): NumericArray {
         // a1 = 1 * b1 + x1 * w11 + x2 * w21
         // a2 = 1 * b2 + x1 * w12 + x2 * w22
         // a3 = 1 * b3 + x1 * w13 + x2 * x23
-        val beforeActivation = (matrixOf(input) * this.weight).rowIterator().next() + this.bias
+        val beforeActivation = this.bias.reduce(
+                leftTransformer = { arr: NumericArray ->
+                    (matrixOf(input) * this.weight).rowIterator().next() + arr
+                },
+                rightTransformer = { num: Double ->
+                    (matrixOf(input) * this.weight).rowIterator().next() + num
+                }
+        )
 
         return beforeActivation.activateBy(this.activationFunction)
     }

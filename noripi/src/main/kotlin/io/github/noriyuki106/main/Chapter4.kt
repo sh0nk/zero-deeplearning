@@ -33,7 +33,8 @@ fun main(args: Array<String>) {
 //    sample4_3_2()
 //    sample4_3_3()
 //    sample4_4()
-    sample4_4_1()
+//    sample4_4_1()
+    sample4_4_2()
 }
 
 private fun sample4_2_1() {
@@ -83,4 +84,8 @@ private fun sample4_4_1() {
 
     println(function.getMinimumValueByGradientMethod(initialValue = narrayOf(-3.0, 4.0),
             learningRate = 0.1, numOfSteps = 100))
+}
+
+private fun sample4_4_2() {
+
 }
