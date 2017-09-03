@@ -16,82 +16,62 @@
  */
 package io.github.noriyuki106.neural_network
 
-import io.github.noriyuki106.numkt.Either
 import io.github.noriyuki106.numkt.Matrix
 import io.github.noriyuki106.numkt.NumericArray
 import io.github.noriyuki106.numkt.function.NumericMatrixFunction
 import io.github.noriyuki106.numkt.function.getMinimumValueByGradientMethod
 import io.github.noriyuki106.numkt.matrixOf
-import io.github.noriyuki106.numkt.plus
+import io.github.noriyuki106.numkt.narrayOf
 import io.github.noriyuki106.numkt.times
 
 class NeuralNetwork(vararg private val layers: NeuralNetworkLayer) {
-    private val lossEvaluator: (NumericArray, NumericArray) -> NumericMatrixFunction = { input, trueLabel ->
-        { crossEntropyError(this.predict(input, it), trueLabel) }
-    }
-
     operator fun invoke(input: NumericArray, trueLabel: NumericArray): NumericArray {
-        val weights = this.layers.map {
-            Matrix.gaussianRandom(it.inputSize, it.outputSize)
-        }
-
-        println(weights.first())
-        val matrixDiff = this.lossEvaluator(input, trueLabel).getMinimumValueByGradientMethod(
-                initialValue = weights.first()
-        )
-
-        println(this.predict(input, weights.first()))
-
-        return this.predict(input, weights.first() + matrixDiff)
-    }
-
-    private fun predict(input: NumericArray, weight: Matrix): NumericArray {
-        return this.layers.foldIndexed(input) { _, acc, func ->
-            func(acc, weight)
+        return this.layers.fold(input) { acc, layer ->
+            layer.train(acc, trueLabel)
+            return@fold layer(acc)
         }
     }
 }
 
-class NeuralNetworkLayer {
-    private val activationFunction: ActivationFunction
-    private val bias: Either<NumericArray, Double>
-    internal val inputSize: Int
-    internal val outputSize: Int
+class NeuralNetworkLayer(private val bias: NumericArray,
+                         internal val inputSize: Int,
+                         internal val outputSize: Int,
+                         private val activationFunction: ActivationFunction = sigmoid.toActivationFunction()) {
 
-    constructor(bias: NumericArray,
-                inputSize: Int,
-                outputSize: Int,
-                activationFunction: ActivationFunction = sigmoid.toActivationFunction()) {
-
-        this.activationFunction = activationFunction
-        this.inputSize = inputSize
-        this.outputSize = outputSize
-        this.bias = Either.left(bias)
+    private val lossEvaluator: (NumericArray, NumericArray) -> NumericMatrixFunction = { input, trueLabel ->
+        { crossEntropyError(this(input, it), trueLabel) }
     }
+
+    private var weight = Matrix.gaussianRandom(this.inputSize, this.outputSize)
 
     constructor(bias: Double = 0.0,
                 inputSize: Int,
                 outputSize: Int,
-                activationFunction: ActivationFunction = sigmoid.toActivationFunction()) {
+                activationFunction: ActivationFunction = sigmoid.toActivationFunction()) :
 
-        this.bias = Either.right(bias)
-        this.inputSize = inputSize
-        this.outputSize = outputSize
-        this.activationFunction = activationFunction
+            this(
+                    bias = narrayOf(*(0 until outputSize).map { bias }.toDoubleArray()),
+                    inputSize = inputSize,
+                    outputSize = outputSize,
+                    activationFunction = activationFunction
+            )
+
+    fun train(input: NumericArray, trueLabel: NumericArray) {
+        // new
+        val newWeight = this.lossEvaluator(input, trueLabel).getMinimumValueByGradientMethod(
+                initialValue = this.weight)
+
+        println("loss: " + crossEntropyError(this(input), trueLabel))
+        println("loss updated: " + crossEntropyError(this(input, newWeight), trueLabel))
+
+        this.weight = newWeight
     }
 
-    operator fun invoke(input: NumericArray, weight: Matrix): NumericArray {
+    operator fun invoke(input: NumericArray, weight: Matrix = this.weight): NumericArray {
         // a1 = 1 * b1 + x1 * w11 + x2 * w21
         // a2 = 1 * b2 + x1 * w12 + x2 * w22
         // a3 = 1 * b3 + x1 * w13 + x2 * x23
-        val beforeActivation = this.bias.reduce(
-                leftTransformer = { arr: NumericArray ->
-                    (matrixOf(input) * weight).rowIterator().next() + arr
-                },
-                rightTransformer = { num: Double ->
-                    (matrixOf(input) * weight).rowIterator().next() + num
-                }
-        )
+        val beforeActivation = (matrixOf(input) * weight).rowIterator().next() + this.bias
 
         return beforeActivation.activateBy(this.activationFunction)
     }

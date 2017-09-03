@@ -38,6 +38,7 @@ fun main(args: Array<String>) {
 //    sample4_4()
 //    sample4_4_1()
     sample4_4_2()
+//    sample4_5()
 }
 
 private fun sample4_2_1() {
@@ -100,4 +101,18 @@ private fun sample4_4_2() {
 
     val trueLabel = narrayOf(0, 0, 1)
     println(simpleNet(narrayOf(0.6, 0.9), trueLabel = trueLabel))
+}
+
+private fun sample4_5() {
+    val twoLayerNet = NeuralNetwork(
+            NeuralNetworkLayer(
+                    inputSize = 784,
+                    outputSize = 100
+            ),
+            NeuralNetworkLayer(
+                    inputSize = 100,
+                    outputSize = 10,
+                    activationFunction = softmax
+            )
+    )
 }
