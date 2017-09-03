@@ -45,3 +45,5 @@ tailrec fun NumericMultivariableFunction.getMinimumValueByGradientMethod(initial
         )
     }
 }
+
+

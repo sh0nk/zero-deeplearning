@@ -20,8 +20,20 @@ fun ByteArray.chunk(size: Int): Array<ByteArray> {
     val list = mutableListOf<ByteArray>()
 
     var rest = this.toList()
-    while (rest.size > 0) {
+    while (rest.isNotEmpty()) {
         list.add(rest.take(size).toByteArray())
+        rest = rest.drop(size)
+    }
+
+    return list.toTypedArray()
+}
+
+fun DoubleArray.chunk(size: Int): Array<DoubleArray> {
+    val list = mutableListOf<DoubleArray>()
+
+    var rest = this.toList()
+    while (rest.isNotEmpty()) {
+        list.add(rest.take(size).toDoubleArray())
         rest = rest.drop(size)
     }
 

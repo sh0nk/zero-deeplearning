@@ -16,8 +16,11 @@
  */
 package io.github.noriyuki106.main
 
+import io.github.noriyuki106.neural_network.NeuralNetwork
+import io.github.noriyuki106.neural_network.NeuralNetworkLayer
 import io.github.noriyuki106.neural_network.crossEntropyError
 import io.github.noriyuki106.neural_network.meanSquaredError
+import io.github.noriyuki106.neural_network.softmax
 import io.github.noriyuki106.numkt.NumericArray
 import io.github.noriyuki106.numkt.function.curryByFirst
 import io.github.noriyuki106.numkt.function.curryBySecond
@@ -87,5 +90,14 @@ private fun sample4_4_1() {
 }
 
 private fun sample4_4_2() {
+    val simpleNet = NeuralNetwork(
+            NeuralNetworkLayer(
+                    inputSize = 2,
+                    outputSize = 3,
+                    activationFunction = softmax
+            )
+    )
 
+    val trueLabel = narrayOf(0, 0, 1)
+    println(simpleNet(narrayOf(0.6, 0.9), trueLabel = trueLabel))
 }

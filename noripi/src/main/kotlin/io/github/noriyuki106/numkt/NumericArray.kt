@@ -3,10 +3,22 @@
  */
 package io.github.noriyuki106.numkt
 
+import io.github.noriyuki106.extension.chunk
 import java.util.Arrays
+import java.util.Random
 
 class NumericArray(private val values: DoubleArray) {
     val length = this.values.size
+
+    companion object {
+        fun gaussianRandom(length: Int): NumericArray {
+            val rand = Random()
+
+            return NumericArray((0 until length).map {
+                rand.nextDouble()
+            }.toDoubleArray())
+        }
+    }
 
     override fun toString(): String {
         return Arrays.toString(this.values)
@@ -74,7 +86,16 @@ class NumericArray(private val values: DoubleArray) {
 
     fun inserted(v: Double, i: Int): NumericArray = narrayOf(*this.values.copyOfRange(0, i),
             v, *this.values.copyOfRange(i, this.length))
+
+    fun toList(): List<Double> = this.values.toList()
+
+    fun chunk(size: Int): Array<NumericArray> = this.values.chunk(size).map {
+        narrayOf(*it)
+    }.toTypedArray()
 }
 
 fun narrayOf(vararg values: Double) = NumericArray(values)
 fun narrayOf(vararg values: Int) = NumericArray(values.map { it.toDouble() }.toDoubleArray())
+
+fun Array<NumericArray>.flatten(): NumericArray = narrayOf(
+        *this.map { it.toList() }.flatten().toDoubleArray())
