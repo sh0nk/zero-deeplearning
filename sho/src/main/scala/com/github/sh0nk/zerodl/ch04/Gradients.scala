@@ -24,7 +24,7 @@ object Gradients {
 //    }
 
     (0 until x.size).foreach { i =>
-      println(s"idx ${i}")
+      Logger.debug(s"idx ${i}")
       val org = x.data(i)
       x.data(i) = org + delta
       val fHigh = f(x)
