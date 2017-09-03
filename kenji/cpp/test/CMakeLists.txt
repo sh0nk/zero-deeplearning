@@ -11,6 +11,6 @@ target_link_libraries(${TestName} src_cpp Catch)
 
 add_test(NAME UnitTests COMMAND ${TestName})
 if (ENABLE_INTEGRATION_TEST)
-    add_test(NAME IntegrationTests COMMAND sh integration_test.sh ${CMAKE_BINARY_DIR})
+    # add_test(NAME IntegrationTests COMMAND sh integration_test.sh ${CMAKE_BINARY_DIR})
 endif ()
 

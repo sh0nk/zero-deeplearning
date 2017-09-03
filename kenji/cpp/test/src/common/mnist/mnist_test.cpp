@@ -55,6 +55,6 @@ TEST_CASE("mnist#mnist", "[mnist]") {
   for (int i = 0; i < mnist.image.size(); i++) {
     CHECK((mnist.image.get(0)[i] > 0 ? 1 : 0) == IMAGE_0_THRESH_DATA[i]);
   }
-  CHECK(mnist.image.get(mnist.size() - 1) != nullptr);
-  CHECK(mnist.image.get(mnist.size()) == nullptr);
+  CHECK(!mnist.image.get(mnist.size() - 1).empty());
+  CHECK(mnist.image.get(mnist.size()).empty());
 }

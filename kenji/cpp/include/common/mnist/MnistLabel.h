@@ -22,7 +22,7 @@ class MnistLabel : public IMnist {
   int getNumberOfData() const;
   void show(const int number) const;
   std::vector<std::uint8_t> gets() const;
-  std::uint8_t get(const int number) const;
+  std::uint8_t get(const int index) const;
 
 };
 

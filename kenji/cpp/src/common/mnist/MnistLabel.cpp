@@ -32,12 +32,12 @@ std::vector<std::uint8_t> MnistLabel::gets() const {
   return labels;
 }
 
-std::uint8_t MnistLabel::get(const int number) const {
-  if (number >= number_of_data) {
-    std::cerr << "No image of index " << number << ". 0-" << number_of_data - 1 << std::endl;
+std::uint8_t MnistLabel::get(const int index) const {
+  if (index >= number_of_data) {
+    std::cerr << "No image of index " << index << ". 0-" << number_of_data - 1 << std::endl;
     return '\0';
   }
-  return labels[number];
+  return labels[index];
 }
 
 int MnistLabel::getNumberOfData() const {

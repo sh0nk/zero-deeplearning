@@ -17,19 +17,22 @@ class MnistImage : public IMnist {
   std::int32_t number_of_rows;
   std::int32_t number_of_cols;
   std::int32_t image_size;
-  std::vector<std::uint8_t *> images;
+  std::vector<std::vector<float>> images;
 
  public:
   MnistImage(const std::string &file_path);
-  ~MnistImage();
 
   int getNumberOfData() const;
+
+  /** size of image (rows * cols) */
   int size() const;
+
   int rows() const;
   int cols() const;
-  std::vector<std::uint8_t *> gets() const;
-  std::uint8_t *get(const int number) const;
-  void show(int number) const;
+
+  std::vector<std::vector<float>> gets() const;
+  std::vector<float> get(const int index) const;
+  void show(const int number) const;
 
 };
 
