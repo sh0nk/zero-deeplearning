@@ -5,7 +5,7 @@ target_include_directories(Catch INTERFACE include)
 
 set(TestName test-cpp-deeplearning)
 
-file(GLOB TEST_FILES src/*.cpp src/**/*.cpp src/**/**/*.cpp)
+file(GLOB_RECURSE TEST_FILES "*.cpp")
 add_executable(${TestName} ${TEST_FILES})
 target_link_libraries(${TestName} src_cpp Catch)
 

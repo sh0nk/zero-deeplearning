@@ -1,5 +1,5 @@
 include(CMakeToolsHelpers OPTIONAL) # for Visual Studio Code
-cmake_minimum_required(VERSION 3.3.0 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.8.0 FATAL_ERROR)
 
 # Make PROJECT_SOURCE_DIR, PROJECT_BINARY_DIR, and PROJECT_NAME available.
 project(cpp-deeplearning CXX)
@@ -33,6 +33,11 @@ set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+# Oputput directory
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+
 # ----------------------------------------------------------------------------
 #   Find Dependencies
 # ----------------------------------------------------------------------------
@@ -63,9 +68,9 @@ pkg_search_module(Eigen3 REQUIRED eigen3)
 find_package(PythonLibs 2.7)
 include_directories(${PYTHON_INCLUDE_DIRS})
 if (WITHOUT_NUMPY)
-  add_definitions(-DWITHOUT_NUMPY)
+    add_definitions(-DWITHOUT_NUMPY)
 else ()
-  include_directories(/usr/local/lib/python2.7/site-packages/numpy/core/include)
+    include_directories(/usr/local/lib/python2.7/site-packages/numpy/core/include)
 endif ()
 
 # ----------------------------------------------------------------------------
@@ -205,6 +210,7 @@ endif ()
 #------------------------------------------------
 # DIRS
 #------------------------------------------------
+add_subdirectory(data)
 add_subdirectory(src)
 
 # ----------------------------------------------------------------------------
@@ -234,15 +240,12 @@ MESSAGE(STATUS "CMAKE_INSTALL_PREFIX = ${CMAKE_INSTALL_PREFIX}")
 MESSAGE(STATUS "CMAKE_BUILD_TYPE = ${CMAKE_BUILD_TYPE}")
 MESSAGE(STATUS "CMAKE_MODULE_PATH = ${CMAKE_MODULE_PATH}")
 MESSAGE(STATUS)
-MESSAGE(STATUS "---------------------------     Documentation     -----------------------------")
+MESSAGE(STATUS "---------------------------     Version     -----------------------------")
 MESSAGE(STATUS)
-MESSAGE(STATUS "PCL_LIBRARY_DIRS=${PCL_LIBRARY_DIRS}") # PCL_INCLUDE_DIRS=${PCL_INCLUDE_DIRS}")
-MESSAGE(STATUS "OpenCV_LIB_DIR=${OpenCV_LIBS} OpenCV_INCLUDE_DIRS=${OpenCV_INCLUDE_DIRS}")
-MESSAGE(STATUS "LIBUSB1_INCLUDE_DIRS=${LIBUSB1_INCLUDE_DIRS}")
-MESSAGE(STATUS "LIB_REALSENSE=${LIB_REALSENSE}")
-MESSAGE(STATUS "LIB_ARUCO=${LIB_ARUCO}")
-MESSAGE(STATUS "CMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}")
-MESSAGE(STATUS "USE_OWN_EIGEN3=${USE_OWN_EIGEN3} EIGEN3_INCLUDE_DIR=${EIGEN3_INCLUDE_DIR}")
+MESSAGE(STATUS "CXX:          ${CMAKE_CXX_STANDARD}")
+MESSAGE(STATUS "Eigen3:       ${Eigen3_VERSION}")
+MESSAGE(STATUS "Boost:        ${Boost_VERSION}")
+MESSAGE(STATUS "PythonLibs:   ${PYTHONLIBS_VERSION_STRING}")
 MESSAGE(STATUS)
 MESSAGE(STATUS "---------------------------     Options     -----------------------------")
 MESSAGE(STATUS)

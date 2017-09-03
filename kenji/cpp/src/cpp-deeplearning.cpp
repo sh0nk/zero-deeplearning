@@ -12,6 +12,7 @@ namespace plt = matplotlibcpp;
 
 #include "common/functions.h"
 #include "common/utils.h"
+#include "common/mnist/Mnist.h"
 
 void step_function() {
   const Eigen::MatrixXd A = utils::arange(-5.0, 5.0, 0.1);
@@ -50,8 +51,14 @@ void relu() {
 }
 
 int main() {
-  step_function();
-  sigmoid();
-  relu();
+  const std::string image_path = "data/train-images-idx3-ubyte";
+  const std::string label_path = "data/train-labels-idx1-ubyte";
+  Mnist mnist(image_path, label_path);
+  mnist.image.show(0);
+  mnist.label.show(0);
+
+  // step_function();
+  // sigmoid();
+  // relu();
   return 0;
 }
