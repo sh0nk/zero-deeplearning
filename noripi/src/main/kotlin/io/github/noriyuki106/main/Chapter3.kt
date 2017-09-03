@@ -18,22 +18,15 @@ package io.github.noriyuki106.main
 
 //import io.github.noriyuki106.data.Mnist
 import io.github.noriyuki106.data.Mnist
-import io.github.noriyuki106.extension.chunk
-import io.github.noriyuki106.numkt.function.draw
-import io.github.noriyuki106.extension.toUnsigned
-import io.github.noriyuki106.neural_network.NeuralNetwork
-import io.github.noriyuki106.neural_network.NeuralNetworkLayer
 import io.github.noriyuki106.neural_network.activateBy
-import io.github.noriyuki106.neural_network.identity
 import io.github.noriyuki106.neural_network.relu
 import io.github.noriyuki106.neural_network.sigmoid
 import io.github.noriyuki106.neural_network.softmax
 import io.github.noriyuki106.neural_network.step
-import io.github.noriyuki106.neural_network.toActivationFunction
+import io.github.noriyuki106.numkt.function.draw
 import io.github.noriyuki106.numkt.matrixOf
 import io.github.noriyuki106.numkt.narrayOf
 import io.github.noriyuki106.numkt.times
-import java.util.Arrays
 
 fun main(args: Array<String>) {
 //    sample3_2()
@@ -64,23 +57,23 @@ private fun sample3_3() {
 }
 
 private fun sample3_4() {
-    val network = NeuralNetwork(
-            NeuralNetworkLayer(
-                    weight = matrixOf(narrayOf(0.1, 0.3, 0.5), narrayOf(0.2, 0.4, 0.6)),
-                    bias = narrayOf(0.1, 0.2, 0.3)
-            ),
-            NeuralNetworkLayer(
-                    weight = matrixOf(narrayOf(0.1, 0.4), narrayOf(0.2, 0.5), narrayOf(0.3, 0.6)),
-                    bias = narrayOf(0.1, 0.2)
-            ),
-            NeuralNetworkLayer(
-                    weight = matrixOf(narrayOf(0.1, 0.3), narrayOf(0.2, 0.4)),
-                    bias = narrayOf(0.1, 0.2),
-                    activationFunction = identity.toActivationFunction()
-            )
-    )
-
-    println(network(narrayOf(1.0, 0.5)))
+//    val network = NeuralNetwork(
+//            NeuralNetworkLayer(
+//                    weight = matrixOf(narrayOf(0.1, 0.3, 0.5), narrayOf(0.2, 0.4, 0.6)),
+//                    bias = narrayOf(0.1, 0.2, 0.3)
+//            ),
+//            NeuralNetworkLayer(
+//                    weight = matrixOf(narrayOf(0.1, 0.4), narrayOf(0.2, 0.5), narrayOf(0.3, 0.6)),
+//                    bias = narrayOf(0.1, 0.2)
+//            ),
+//            NeuralNetworkLayer(
+//                    weight = matrixOf(narrayOf(0.1, 0.3), narrayOf(0.2, 0.4)),
+//                    bias = narrayOf(0.1, 0.2),
+//                    activationFunction = identity.toActivationFunction()
+//            )
+//    )
+//
+//    println(network(narrayOf(1.0, 0.5)))
 }
 
 private fun sample3_5() {
