@@ -13,4 +13,3 @@ add_test(NAME UnitTests COMMAND ${TestName})
 if (ENABLE_INTEGRATION_TEST)
     # add_test(NAME IntegrationTests COMMAND sh integration_test.sh ${CMAKE_BINARY_DIR})
 endif ()
-

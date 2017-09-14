@@ -2,10 +2,11 @@
 // Created by Kenji Nomura on 9/1/17.
 //
 
-#include "common/functions.h"
+#include "common/functions/detail/activation_functions.h"
 #include <unsupported/Eigen/MatrixFunctions>
 
 namespace functions {
+namespace activation {
 
 Eigen::MatrixXd step_function(const Eigen::MatrixXd &X) {
   return (X.array() > 0.0).cast<double>();
@@ -29,4 +30,5 @@ Eigen::MatrixXd relu(const Eigen::MatrixXd &X) {
   // return X.array().max(Eigen::MatrixXd::Zero(X.rows(), X.cols()).array());
 }
 
+}
 }

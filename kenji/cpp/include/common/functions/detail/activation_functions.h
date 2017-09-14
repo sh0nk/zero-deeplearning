@@ -8,6 +8,7 @@
 #include <Eigen/Dense>
 
 namespace functions {
+namespace activation {
 
 /** Step Func (ステップ関数) */
 Eigen::MatrixXd step_function(const Eigen::MatrixXd &X);
@@ -21,6 +22,7 @@ Eigen::MatrixXd softmax(const Eigen::MatrixXd &X);
 /** ReLU Func (ReLU関数) */
 Eigen::MatrixXd relu(const Eigen::MatrixXd &X);
 
+}
 }
 
 #endif //CPP_DEEP_LEARNING_FUNCTIONS_H
