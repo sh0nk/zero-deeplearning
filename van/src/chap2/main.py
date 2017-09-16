@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import numpy as np
 
 def AND(x1, x2):
   """
@@ -13,11 +14,13 @@ def AND(x1, x2):
   >>> AND(1, 1)
   1
   """
-  w1, w2, theta = 0.5, 0.5, 0.7
-  tmp = x1*w1 + x2*w2
-  if tmp <= theta:
+  x = np.array([x1, x2])
+  w = np.array([0.5, 0.5])
+  b = -0.7
+  tmp = np.sum(w*x) + b
+  if tmp <= 0:
     return 0
-  elif tmp > theta:
+  else:
     return 1
 
 def _test():
