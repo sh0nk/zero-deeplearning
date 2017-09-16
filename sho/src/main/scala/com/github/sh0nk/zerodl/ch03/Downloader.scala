@@ -5,6 +5,25 @@ import java.net.URL
 import java.nio.file.Files
 
 class Downloader {
+}
+
+object Downloader {
+  val urlBase = "http://yann.lecun.com/exdb/mnist/"
+  val keyFile = Map(
+    "train_img" -> "train-images-idx3-ubyte.gz",
+    "train_label" -> "train-labels-idx1-ubyte.gz",
+    "test_img" -> "t10k-images-idx3-ubyte.gz",
+    "test_label" -> "t10k-labels-idx1-ubyte.gz"
+  )
+  val baseDir = {
+    val dir = new File(System.getProperty("java.io.tmpdir"), "zerodl-mnist").toPath
+    if (!Files.exists(dir)) {
+      Files.createDirectory(dir)
+      println(s"Temp directory created ${dir}")
+    }
+    dir.toAbsolutePath
+  }
+
   private def download(url: String, outputFile: String) = {
     println(s"start downloading URI: ${url} to file: ${outputFile}")
     val stream = new URL(url).openStream()
@@ -26,26 +45,8 @@ class Downloader {
         }
     }
   }
-}
-
-object Downloader {
-  val urlBase = "http://yann.lecun.com/exdb/mnist/"
-  val keyFile = Map(
-    "train_img" -> "train-images-idx3-ubyte.gz",
-    "train_label" -> "train-labels-idx1-ubyte.gz",
-    "test_img" -> "t10k-images-idx3-ubyte.gz",
-    "test_label" -> "t10k-labels-idx1-ubyte.gz"
-  )
-  val baseDir = {
-    val dir = new File(System.getProperty("java.io.tmpdir"), "zerodl-mnist").toPath
-    if (!Files.exists(dir)) {
-      Files.createDirectory(dir)
-      println(s"Temp directory created ${dir}")
-    }
-    dir.toAbsolutePath
-  }
 
   def main(args: Array[String]) = {
-    new Downloader().ensureDownloadingAll()
+    Downloader.ensureDownloadingAll()
   }
 }
