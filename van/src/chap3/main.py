@@ -26,6 +26,17 @@ def sigmoid(x):
   """
   return 1 / (1 + np.exp(-x))
 
+def relu(x):
+  """
+  >>> relu(-1)
+  0
+  >>> relu(3)
+  3
+  >>> relu(np.array([-3, -1, -0.1, 0, 0.1, 99]))
+  array([  0. ,   0. ,   0. ,   0. ,   0.1,  99. ])
+  """
+  return np.maximum(0, x)
+
 def _test():
   import doctest
   doctest.testmod()
@@ -45,4 +56,11 @@ if __name__ == "__main__":
   plt.plot(x, y)
   plt.ylim(-0.1, 1.1)
   filename = "sigmoid.png"
+  plt.savefig(filename)
+  # output relu
+  plt.clf()
+  y = relu(x)
+  plt.plot(x, y)
+  plt.ylim(-0.1, 5.1)
+  filename = "relu.png"
   plt.savefig(filename)
