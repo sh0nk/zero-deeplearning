@@ -61,6 +61,23 @@ def OR(x1, x2):
   b = -0.2
   return perceptron(x, w, b)
 
+def XOR(x1, x2):
+  """
+  logic circuit (XOR)
+
+  >>> XOR(0, 0)
+  0
+  >>> XOR(1, 0)
+  1
+  >>> XOR(0, 1)
+  1
+  >>> XOR(1, 1)
+  0
+  """
+  s1 = NAND(x1, x2)
+  s2 = OR(x1, x2)
+  return AND(s1, s2)
+
 def _test():
   import doctest
   doctest.testmod()
