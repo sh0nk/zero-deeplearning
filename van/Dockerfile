@@ -8,4 +8,4 @@ RUN apt-get update -y && \
 ADD src /srv/src
 WORKDIR /srv/src
 
-RUN pip3 install -r requirement.txt
+RUN pip3 install -r requirements.txt
