@@ -37,6 +37,21 @@ def relu(x):
   """
   return np.maximum(0, x)
 
+def identity_function(x):
+  """
+  >>> identity_function(-5)
+  -5
+  >>> identity_function(-1)
+  -1
+  >>> identity_function(0)
+  0
+  >>> identity_function(1)
+  1
+  >>> identity_function(5)
+  5
+  """
+  return x
+
 def _test():
   import doctest
   doctest.testmod()
