@@ -52,6 +52,17 @@ def identity_function(x):
   """
   return x
 
+def softmax(a):
+  """
+  >>> softmax(np.array([0.3, 2.9, 4.0]))
+  array([ 0.01821127,  0.24519181,  0.73659691])
+  >>> softmax(123)
+  1.0
+  >>> softmax([0.5, 2])
+  array([ 0.18242552,  0.81757448])
+  """
+  return np.exp(a) / np.sum(np.exp(a))
+
 def _test():
   import doctest
   doctest.testmod()
