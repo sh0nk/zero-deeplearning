@@ -8,4 +8,6 @@ RUN apt-get update -y && \
 ADD src /srv/src
 WORKDIR /srv/src
 
-RUN pip3 install -r requirements.txt
+RUN pip3 install -r requirements.txt && \
+    mkdir -p /srv/data/mnist && \
+    python3 /srv/src/lib/mnist.py
