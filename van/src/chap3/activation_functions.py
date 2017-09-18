@@ -61,7 +61,8 @@ def softmax(a):
   >>> softmax([0.5, 2])
   array([ 0.18242552,  0.81757448])
   """
-  return np.exp(a) / np.sum(np.exp(a))
+  exp_a = np.exp(a - np.max(a))
+  return exp_a / np.sum(exp_a)
 
 def _test():
   import doctest
