@@ -1,5 +1,6 @@
 [run]
 omit =
+    lib/mnist.py
     test/*
     */__init__.py
     /usr/local/lib/*
