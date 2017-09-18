@@ -55,11 +55,10 @@ int main() {
   const std::string label_path = "data/train-labels-idx1-ubyte";
   Mnist mnist(image_path, label_path);
   mnist.image.show(0);
-  mnist.image.show(mnist.image.getNumberOfData()-1);
   mnist.label.show(0);
 
   // step_function();
-  sigmoid();
+  // sigmoid();
   // relu();
   return 0;
 }

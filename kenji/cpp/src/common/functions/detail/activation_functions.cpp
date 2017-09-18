@@ -19,7 +19,7 @@ Eigen::MatrixXd sigmoid(const Eigen::MatrixXd &X) {
 Eigen::MatrixXd softmax(const Eigen::MatrixXd &X) {
   const double c = X.maxCoeff();
   const Eigen::MatrixXd exp_A = (X.array() - c).exp();
-  const double sum_exp_a = exp_A.sum();
+  const double sum_exp_a = exp_A.sum(); // FIXME: 行毎
   const Eigen::MatrixXd Y = exp_A.array() / sum_exp_a;
   return Y;
 }
