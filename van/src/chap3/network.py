@@ -1,8 +1,5 @@
 import numpy as np
-if __name__ == "__main__":
-  from activation_functions import *
-else:
-  from chap3.activation_functions import *
+from chap3.activation_functions import *
 
 def init_network():
   network={}
