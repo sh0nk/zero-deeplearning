@@ -17,6 +17,30 @@ def numerical_diff(f, x):
   h = 1e-4 #0.0001
   return (f(x + h) - f(x - h)) / (2 * h)
 
+def numerical_gradient(f, x):
+  """
+  gradient functions (enable to deal multi variables)
+
+  >>> numerical_gradient(__test_function_2, np.array([3.0, 4.0]))
+  array([ 6.,  8.])
+  >>> numerical_gradient(__test_function_2, np.array([0.0, 2.0]))
+  array([ 0.,  4.])
+  >>> numerical_gradient(__test_function_2, np.array([3.0, 0.0]))
+  array([ 6.,  0.])
+  """
+  h = 1e-4
+  grad = np.zeros_like(x)
+
+  for idx in range(x.size):
+    val = x[idx]
+    x[idx] = val + h
+    fxh1 = f(x)
+    x[idx] = val - h
+    fxh2 = f(x)
+    grad[idx] = (fxh1 - fxh2) / (2 * h)
+    x[idx] = val #restore value
+  return grad
+
 def __test_function_1(x):
   """
   function for test
@@ -85,3 +109,19 @@ if __name__ == "__main__":
     plt.plot([0.0, tx], [ty, ty], "--", color=c)
     plt.plot([tx, tx], [-1.0, ty], "--", color=c)
   plt.savefig("derivative_function.png")
+
+  # draw gradient map
+  plt.clf()
+  plt.xlim(-2.0, 2.0)
+  plt.ylim(-2.0, 2.0)
+  x0, x1 = np.mgrid[-2.0:2.1:0.25, -2.0:2.1:0.25]
+  x0 = x0.flatten()
+  x1 = x1.flatten()
+  g0, g1 = np.copy(x0), np.copy(x1)
+  for idx in range(x0.size):
+    grad = numerical_gradient(__test_function_2, np.array([x0[idx], x1[idx]])) 
+    g0[idx] -= grad[0]
+    g1[idx] -= grad[1]
+  plt.quiver(x0, x1, g0, g1, angles="xy", scale_units="xy", scale=10)
+  plt.grid(which='major',color='lightgray',linestyle='--', linewidth=1, alpha=90)
+  plt.savefig("gradient_map.png")
