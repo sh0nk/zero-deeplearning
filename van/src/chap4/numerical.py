@@ -9,6 +9,10 @@ def numerical_diff(f, x):
   0.1999999999990898
   >>> numerical_diff(__test_function_1, 10)
   0.2999999999986347
+  >>> numerical_diff(__test_function_2([None, 4.0]), 3.0)
+  6.00000000000378
+  >>> numerical_diff(__test_function_2([3.0, None]), 4.0)
+  7.999999999999119
   """
   h = 1e-4 #0.0001
   return (f(x + h) - f(x - h)) / (2 * h)
@@ -21,6 +25,38 @@ def __test_function_1(x):
   0.11
   """
   return 0.01 * x ** 2 + 0.1 * x
+
+def __test_function_2(x):
+  """
+  funcstion with 2 variables
+
+  >>> __test_function_2([0.0, 0.0])
+  0.0
+  >>> __test_function_2([0.0, 2.0])
+  4.0
+  >>> __test_function_2([2.5, 0.0])
+  6.25
+  >>> __test_function_2([2.0, 2.5])
+  10.25
+  >>> __test_function_2([5, None])(2)
+  29
+  >>> __test_function_2([None, 3])(4)
+  25
+  >>> __test_function_2([None, None])(4)
+  Traceback (most recent call last):
+  ...
+  Exception: At least one parameter is needed
+  """
+  
+  x0, x1 = x[0], x[1]
+  if x0 == None:
+    if x1 == None:
+      raise Exception("At least one parameter is needed")
+    return lambda t: t ** 2 + x1 ** 2
+  elif x1 == None:
+    return lambda t: x0 ** 2 + t ** 2
+  else:
+    return x0 ** 2 + x1 ** 2
 
 def _test():
   import doctest
