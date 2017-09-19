@@ -41,6 +41,24 @@ def numerical_gradient(f, x):
     x[idx] = val #restore value
   return grad
 
+def gradient_descent(f, init_x, lr=0.01, step_num=100):
+  """
+  implementation of gradient descent.
+
+  >>> init_x = np.array([-3.0, 4.0])
+  >>> gradient_descent(__test_function_2, init_x, lr=0.1)
+  array([ -6.11110793e-10,   8.14814391e-10])
+  >>> gradient_descent(__test_function_2, init_x, lr=10.0)
+  array([ -2.58983747e+13,  -1.29524862e+12])
+  >>> gradient_descent(__test_function_2, init_x, lr=1e-10)
+  array([-2.99999994,  3.99999992])
+  """
+  x = np.copy(init_x)
+  for i in range(step_num):
+    grad = numerical_gradient(f, x)
+    x -= lr * grad
+  return x
+
 def __test_function_1(x):
   """
   function for test
@@ -125,3 +143,27 @@ if __name__ == "__main__":
   plt.quiver(x0, x1, g0, g1, angles="xy", scale_units="xy", scale=10)
   plt.grid(which='major',color='lightgray',linestyle='--', linewidth=1, alpha=90)
   plt.savefig("gradient_map.png")
+
+  # draw gradient descent
+  plt.clf()
+  x = np.array([-3.0, 4.0])
+  plt.plot(x[0], x[1], "o", color="steelblue")
+  for _ in range(1000):
+    x = gradient_descent(__test_function_2, x, lr=0.1, step_num=1)
+    plt.plot(x[0], x[1], "o", color="steelblue")
+  n = 100
+  x = np.linspace(-3.5, 3.5, n)
+  y = np.linspace(-4, 4, n)
+  X, Y = np.meshgrid(x, y)
+  
+  Z = X**2 + Y**2 - 1
+  plt.contour(X, Y, Z, levels=[0], colors="lightgray", linestyles="dashed")
+  Z = X**2 + Y**2 - 4
+  plt.contour(X, Y, Z, levels=[0], colors="lightgray", linestyles="dashed")
+  Z = X**2 + Y**2 - 9
+  plt.contour(X, Y, Z, levels=[0], colors="lightgray", linestyles="dashed")
+  Z = X**2 + Y**2 - 16
+  plt.contour(X, Y, Z, levels=[0], colors="lightgray", linestyles="dashed")
+  plt.xlim(-3.5, 3.5)
+  plt.ylim(-4.5, 4.5)
+  plt.savefig("gradient_descent.png")
