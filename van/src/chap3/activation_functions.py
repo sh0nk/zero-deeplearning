@@ -1,8 +1,5 @@
 #!/usr/bin/env python3
 import numpy as np
-import matplotlib as mpl
-mpl.use('agg')
-import matplotlib.pylab as plt
 
 def step_function(x):
   """
@@ -70,6 +67,9 @@ def _test():
 
 if __name__ == "__main__":
   _test()
+  import matplotlib as mpl
+  mpl.use('agg')
+  import matplotlib.pylab as plt
   x = np.arange(-5.0, 5.0, 0.1)
   # output step function
   y = step_function(x)
