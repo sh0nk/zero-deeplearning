@@ -121,6 +121,28 @@ class Relu:
     dx[self.mask] = 0
     return dx
 
+class Sigmoid:
+  """
+  >>> x = np.array([[1.0, -0.5], [-2.0, 3.0]])
+  >>> sig = Sigmoid()
+  >>> sig.forward(x)
+  array([[ 0.73105858,  0.37754067],
+         [ 0.11920292,  0.95257413]])
+  >>> dout = np.array([[-3.0, 2.0], [1.5, 0.0]])
+  >>> sig.backward(dout)
+  array([[-0.5898358 ,  0.47000742],
+         [ 0.15749038,  0.        ]])
+  """
+  def __init__(self):
+    self.out = None
+
+  def forward(self, x):
+    self.out = 1 / (1 + np.exp(-x))
+    return self.out
+
+  def backward(self, dout):
+    return dout * self.out * (1.0 - self.out)
+
 def _test():
   import doctest
   doctest.testmod()
