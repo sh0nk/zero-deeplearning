@@ -3,6 +3,7 @@ def suite():
   from . import numerical
   from . import simplenet
   from . import gradient
+  from . import two_layer_net
 
   import doctest
   import unittest
@@ -11,5 +12,6 @@ def suite():
   suite.addTest(doctest.DocTestSuite(numerical))
   suite.addTest(doctest.DocTestSuite(simplenet))
   suite.addTest(doctest.DocTestSuite(gradient))
+  suite.addTest(doctest.DocTestSuite(two_layer_net))
   return suite
 

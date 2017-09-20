@@ -2,7 +2,7 @@
 import numpy as np
 
 def numerical_gradient(f, x):
-  """  
+  """
   calc gradient(enable to deal algebra)
   >>> from chap4.simplenet import SimpleNet
   >>> net = SimpleNet()
