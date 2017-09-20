@@ -10,6 +10,9 @@ run:
 		--name $(NAME) \
 		$(NAME) /bin/bash
 
+attach:
+	docker exec -it $(NAME) /bin/bash
+
 test:
 	docker run -it --rm \
 		-v $(realpath .)/src:/srv/src \

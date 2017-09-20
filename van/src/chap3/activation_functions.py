@@ -1,8 +1,5 @@
 #!/usr/bin/env python3
 import numpy as np
-import matplotlib as mpl
-mpl.use('agg')
-import matplotlib.pylab as plt
 
 def step_function(x):
   """
@@ -60,7 +57,15 @@ def softmax(a):
   1.0
   >>> softmax([0.5, 2])
   array([ 0.18242552,  0.81757448])
+  >>> softmax(np.array([[0.3, 2.9, 4.0], [0.01, 2.0, 0.4]]))
+  array([[ 0.01821127,  0.24519181,  0.73659691],
+         [ 0.10211882,  0.74705365,  0.15082753]])
   """
+  if type(a) == np.ndarray and a.ndim == 2:
+    a = a.T
+    a = a - np.max(a, axis=0)
+    y = np.exp(a) / np.sum(np.exp(a), axis=0)
+    return y.T
   exp_a = np.exp(a - np.max(a))
   return exp_a / np.sum(exp_a)
 
@@ -70,6 +75,9 @@ def _test():
 
 if __name__ == "__main__":
   _test()
+  import matplotlib as mpl
+  mpl.use('agg')
+  import matplotlib.pylab as plt
   x = np.arange(-5.0, 5.0, 0.1)
   # output step function
   y = step_function(x)
