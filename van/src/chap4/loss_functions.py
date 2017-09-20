@@ -41,21 +41,24 @@ def cross_entropy_error(y, t):
   ...
   AttributeError: 'list' object has no attribute 'ndim'
   >>> cross_entropy_error(np.array(y), np.array(t))
-  0.51082545709933802
+  0.51082562376599072
   >>> y = [0.1, 0.05, 0.1, 0.0, 0.05, 0.1, 0.0, 0.6, 0.5, 0.0]
   >>> cross_entropy_error(np.array(y), np.array(t))
-  2.3025840929945458
+  2.3025850929940455
   >>> y = [[0.1, 0.05, 0.6, 0.0, 0.05, 0.1, 0.0, 0.1, 0.0, 0.0], \
            [0.1, 0.05, 0.1, 0.0, 0.05, 0.1, 0.0, 0.6, 0.5, 0.0]]
+  >>> t = [[0, 0, 1, 0, 0, 0, 0, 0, 0, 0,], \
+           [0, 0, 1, 0, 0, 0, 0, 0, 0, 0,]]
   >>> cross_entropy_error(np.array(y), np.array(t))
-  1.4067047750469419
+  1.4067053583800182
   """
-  delta = 1e-7
   if y.ndim == 1:
     y = y.reshape(1, y.size)
     t = t.reshape(1, t.size)
+  if t.size == y.size:
+    t = t.argmax(axis=1)
   batch_size = y.shape[0] 
-  return -np.sum(t * np.log(y + delta)) / batch_size
+  return -np.sum(np.log(y[np.arange(batch_size), t])) / batch_size
 
 def _test():
   import doctest
