@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import numpy as np
 
 class MulLayer:
   """
@@ -87,8 +88,38 @@ def __sample():
   >>> dapple, dapple_num = mul_apple_layer.backward(dapple_price)
   >>> print(dapple, int(dapple_num), dorange, int(dorange_num), dfruit_price, dprice)
   2.2 110 3.3000000000000003 165 1.1 1
+
+  >>> __sample()
   """
   pass
+
+class Relu:
+  """
+  layer class for activation function.
+
+  >>> x = np.array([[1.0, -0.5], [-2.0, 3.0]])
+  >>> relu = Relu()
+  >>> relu.forward(x)
+  array([[ 1.,  0.],
+         [ 0.,  3.]])
+  >>> dout = np.array([[-3.0, 2.0], [1.5, 0.0]])
+  >>> relu.backward(dout)
+  array([[-3.,  0.],
+         [ 0.,  0.]])
+  """
+  def __init__(self):
+    self.mask = None
+
+  def forward(self, x):
+    self.mask = (x <= 0)
+    out = x.copy()
+    out[self.mask] = 0
+    return out
+
+  def backward(self, dout):
+    dx = dout.copy()
+    dx[self.mask] = 0
+    return dx
 
 def _test():
   import doctest
