@@ -143,6 +143,40 @@ class Sigmoid:
   def backward(self, dout):
     return dout * self.out * (1.0 - self.out)
 
+class Affine:
+  """
+  Affine transition
+
+  >>> x = np.random.randn(2, 2)
+  >>> W = np.random.randn(2, 3)
+  >>> b = np.random.randn(3)
+  >>> aff = Affine(W, b)
+  >>> out = aff.forward(x)
+  >>> out.shape
+  (2, 3)
+  >>> dx, dw, db = aff.backward(out / 10)
+  >>> dx.shape == x.shape
+  True
+  >>> dw.shape == W.shape
+  True
+  >>> db.shape == b.shape
+  True
+  """
+  def __init__(self, W, b):
+    self.W = W
+    self.b = b
+    self.x = None
+    
+  def forward(self, x):
+    self.x = x
+    return np.dot(x, self.W) + self.b
+
+  def backward(self, dout):
+    dx = np.dot(dout, self.W.T)
+    dw = np.dot(self.x.T, dout)
+    db = np.sum(dout, axis=0)
+    return dx, dw, db
+
 def _test():
   import doctest
   doctest.testmod()
