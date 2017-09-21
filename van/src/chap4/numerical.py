@@ -155,7 +155,7 @@ if __name__ == "__main__":
   x = np.linspace(-3.5, 3.5, n)
   y = np.linspace(-4, 4, n)
   X, Y = np.meshgrid(x, y)
-  
+
   Z = X**2 + Y**2 - 1
   plt.contour(X, Y, Z, levels=[0], colors="lightgray", linestyles="dashed")
   Z = X**2 + Y**2 - 4

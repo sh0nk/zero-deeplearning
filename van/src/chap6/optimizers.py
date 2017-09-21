@@ -147,3 +147,39 @@ def _test():
 
 if __name__ == "__main__":
   _test()
+
+  import matplotlib as mpl
+  mpl.use("agg")
+  from matplotlib import pyplot as plt
+  fig, [[axL, axR], [axLL, axLR]] = plt.subplots(ncols=2, nrows=2, figsize=(10,8))
+
+  f = lambda x, y: ((x ** 2) / 20) + (y ** 2)
+  dfdx = lambda x: x / 10
+  dfdy = lambda y: 2 * y
+  dfdw = lambda w: {"x": dfdx(w["x"]), "y": dfdy(w["y"])}
+  def plot(ax, f):
+    n = 100
+    x = np.linspace(-10, 10, n)
+    y = np.linspace(-5, 5, n)
+    X, Y = np.meshgrid(x, y)
+    for r in (1, 2, 3, 4, 5, 6, 7):
+      Z = f(X, Y) - r
+      ax.contour(X, Y, Z, levels=[0], colors="lightgray")
+      #, linestyles="dashed")
+
+  for t in [("SGD", SGD(lr=0.95), axL), ("Momentum", Momentum(lr=0.1), axR),
+            ("AdaGrad", AdaGrad(lr=1.5), axLL), ("Adam", Adam(lr=0.3), axLR)]:
+    optimizer = t[1]
+    w = {"x": -7.0, "y": 2.0}
+    w_list = [(w["x"], w["y"])]
+    for i in range(30):
+      dw = dfdw(w)
+      optimizer.update(w, dw)
+      w_list.append((w["x"], w["y"]))
+    ax = t[2]
+    ax.set_title(t[0])
+    ax.plot(list(map(lambda w: w[0], w_list)), list(map(lambda x: x[1], w_list)), marker=".")
+    ax.set_xlim(-10, 10)
+    ax.set_ylim(-5, 5)
+    plot(ax, f)
+  fig.savefig("optimizer.png")
