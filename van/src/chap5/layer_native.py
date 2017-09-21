@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 import numpy as np
+from chap3.activation_functions import softmax
+from chap4.loss_functions import cross_entropy_error
 
 class MulLayer:
   """
@@ -176,6 +178,35 @@ class Affine:
     dw = np.dot(self.x.T, dout)
     db = np.sum(dout, axis=0)
     return dx, dw, db
+
+class SoftmaxWithLoss:
+  """
+  softmax + cros_entropy_loss
+
+  >>> x = np.array([[2.0, 3.0, 0.5], [4.0, -0.5, 1.0]])
+  >>> t = np.array([[0, 0, 1], [1, 0, 0]])
+  >>> layer = SoftmaxWithLoss()
+  >>> y, loss = layer.forward(x, t)
+  >>> y.shape
+  (2, 3)
+  >>> type(loss)
+  <class 'numpy.float64'>
+  >>> layer.backward().shape
+  (2, 3)
+  """
+  def __init__(self):
+    self.y = None
+    self.t = None
+    
+  def forward(self, x, t):
+    self.y = softmax(x)
+    self.t = t
+    loss = cross_entropy_error(self.y, self.t)
+    return self.y, loss
+
+  def backward(self, dout=1):
+    batch_size = self.t.shape[0]
+    return (self.y - self.t) / batch_size
 
 def _test():
   import doctest
