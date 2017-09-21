@@ -117,6 +117,16 @@ class TwoLayerNet:
     True
     >>> grads["b2"].shape == net.params["b2"].shape
     True
+    >>> from lib.mnist import load_mnist
+    >>> (x_train, t_train), (x_test, t_test) = load_mnist(normalize=True, one_hot_label=True)
+    >>> network = TwoLayerNet(input_size=784, hidden_size=50, output_size=10)
+    >>> x_batch = x_train[:3]
+    >>> t_batch = t_train[:3]
+    >>> grad_numerical = network.numerical_gradient(x_batch, t_batch)
+    >>> grad_backprop = network.gradient(x_batch, t_batch)
+    >>> diffs = list(map(lambda idx: (idx, np.abs(grad_backprop[idx] - grad_numerical[idx])), grad_numerical.keys()))
+    >>> sum(map(lambda diff: np.sum(diff[1] >= 1e-9), diffs))
+    0
     """
     # forward
     self.loss(x, t)
