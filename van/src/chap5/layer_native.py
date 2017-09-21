@@ -156,18 +156,20 @@ class Affine:
   >>> out = aff.forward(x)
   >>> out.shape
   (2, 3)
-  >>> dx, dw, db = aff.backward(out / 10)
+  >>> dx = aff.backward(out / 10)
   >>> dx.shape == x.shape
   True
-  >>> dw.shape == W.shape
+  >>> aff.dW.shape == W.shape
   True
-  >>> db.shape == b.shape
+  >>> aff.db.shape == b.shape
   True
   """
   def __init__(self, W, b):
     self.W = W
     self.b = b
     self.x = None
+    self.dW = None
+    self.db = None
     
   def forward(self, x):
     self.x = x
@@ -175,9 +177,9 @@ class Affine:
 
   def backward(self, dout):
     dx = np.dot(dout, self.W.T)
-    dw = np.dot(self.x.T, dout)
-    db = np.sum(dout, axis=0)
-    return dx, dw, db
+    self.dW = np.dot(self.x.T, dout)
+    self.db = np.sum(dout, axis=0)
+    return dx
 
 class SoftmaxWithLoss:
   """
