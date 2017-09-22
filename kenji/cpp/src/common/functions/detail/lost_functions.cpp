@@ -20,6 +20,7 @@ double cross_entropy_error(const Eigen::RowVectorXd &Y, const Eigen::RowVectorXd
 Eigen::MatrixXd cross_entropy_error(const Eigen::MatrixXd &Y, const Eigen::MatrixXd &T) {
   const int batch_size = Y.rows();
   // return -1.0 * (T.array() * (Y.array() + delta).log()).sum() / batch_size;
+  return Eigen::MatrixXd::Zero(T.rows(), T.cols()); // TODO
 }
 
 }
