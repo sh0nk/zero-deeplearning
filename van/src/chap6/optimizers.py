@@ -113,7 +113,7 @@ class Adam:
     """
     >>> params = {"test": np.array([[2.0, 1.0], [-2.0, 0.5]]), "test2": np.array([0.2, 0.4])}
     >>> grads = {"test": np.array([[0.5, 0.8], [1.0, 0.5]]), "test2": np.array([3.0, 1.5])}
-    >>> AdaGrad().update(params, grads)
+    >>> Adam().update(params, grads)
     >>> params['test']
     array([[ 1.99,  0.99],
            [-2.01,  0.49]])
