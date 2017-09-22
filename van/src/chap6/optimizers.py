@@ -115,10 +115,10 @@ class Adam:
     >>> grads = {"test": np.array([[0.5, 0.8], [1.0, 0.5]]), "test2": np.array([3.0, 1.5])}
     >>> Adam().update(params, grads)
     >>> params['test']
-    array([[ 1.99,  0.99],
-           [-2.01,  0.49]])
+    array([[ 1.99900001,  0.999     ],
+           [-2.001     ,  0.49900001]])
     >>> params['test2']
-    array([ 0.19,  0.39])
+    array([ 0.199,  0.399])
     """
     if self.m is None:
       self.m, self.v = {}, {}

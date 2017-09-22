@@ -6,7 +6,7 @@ from chap5.layer_native import *
 from collections import OrderedDict
 
 class MultiLayerNet:
-  def __init__(self, input_size, hidden_size_list, output_size):
+  def __init__(self, input_size, hidden_size_list, output_size, weight_decay_lambda=0.0):
     """
     >>> net = MultiLayerNet(30, [20], 10)
     >>> net.params["W1"].shape
@@ -41,6 +41,7 @@ class MultiLayerNet:
       if i + 1 < len(size_list):
         self.layers["Relu{}".format(i)] = Relu()
     self.lastLayer = SoftmaxWithLoss()
+    self.weight_decay_lambda = weight_decay_lambda
 
   def predict(self, x):
     """
@@ -61,9 +62,14 @@ class MultiLayerNet:
     >>> type(net.loss(x, t))
     <class 'numpy.float64'>
     """
+    weight_decay = 0.0
+    for i in range(1, int((len(self.layers) + 1) / 2) + 1):
+      W = self.params["W{}".format(i)]
+      weight_decay += np.sum(W * W)
+    weight_decay = self.weight_decay_lambda * weight_decay / 2
     y = self.predict(x)
     _, loss = self.lastLayer.forward(y, t)
-    return loss
+    return loss + weight_decay
 
   def accuracy(self, x, t):
     """
@@ -78,27 +84,6 @@ class MultiLayerNet:
     if t.ndim != 1:
       t = np.argmax(t, axis=1)
     return np.sum(y == t) / float(x.shape[0])
-
-  def numerical_gradient(self, x, t):
-    """
-    >>> x = np.random.randn(10, 30)
-    >>> t = np.random.randn(10, 10)
-    >>> net = MultiLayerNet(30, [20], 10)
-    >>> grads = net.numerical_gradient(x, t)
-    >>> grads["W1"].shape == net.params["W1"].shape
-    True
-    >>> grads["b1"].shape == net.params["b1"].shape
-    True
-    >>> grads["W2"].shape == net.params["W2"].shape
-    True
-    >>> grads["b2"].shape == net.params["b2"].shape
-    True
-    """
-    loss_W = lambda W: self.loss(x, t)
-    grads = {}
-    for key in self.params.keys():
-      grads[key] = numerical_gradient(loss_W, self.params[key])
-    return grads
 
   def gradient(self, x, t):
     """
@@ -121,11 +106,9 @@ class MultiLayerNet:
     >>> network = MultiLayerNet(input_size=784, hidden_size_list=[50], output_size=10)
     >>> x_batch = x_train[:3]
     >>> t_batch = t_train[:3]
-    >>> grad_numerical = network.numerical_gradient(x_batch, t_batch)
     >>> grad_backprop = network.gradient(x_batch, t_batch)
-    >>> diffs = list(map(lambda idx: (idx, np.abs(grad_backprop[idx] - grad_numerical[idx])), grad_numerical.keys()))
-    >>> sum(map(lambda diff: np.sum(diff[1] >= 1e-3), diffs))
-    0
+    >>> len(grad_backprop)
+    4
     """
     # forward
     self.loss(x, t)
@@ -140,8 +123,9 @@ class MultiLayerNet:
     # set gradient
     grads = {}
     for i in range(1, int((len(self.layers) + 1) / 2) + 1):
-      grads["W{}".format(i)] = self.layers["Affine{}".format(i)].dW
-      grads["b{}".format(i)] = self.layers["Affine{}".format(i)].db
+      layer = self.layers["Affine{}".format(i)]
+      grads["W{}".format(i)] = layer.dW + self.weight_decay_lambda * layer.W
+      grads["b{}".format(i)] = layer.db
     return grads
 
 def _test():
