@@ -57,6 +57,7 @@ class MiniBatchRunner(loader: MNISTLoader) {
     }
 
     val diffW = network.numericalGradient(batchX, batchY)
+    Logger.debug(s"d.W1 ${diffW.W1}")
     network.w -= (diffW * learningRate)
     val loss = network.loss(batchX, batchY)
     Logger.info(s"loss val: $loss")
@@ -71,7 +72,8 @@ object MiniBatchRunner {
     }
     val cols = array(0).length
 
-    new DenseMatrix[T](rows, cols, array.flatten)
+    // The array is row-major order (DenseMatrix default is column-major)
+    new DenseMatrix[T](rows, cols, array.flatten, 0, cols, true)
   }
 
   def testMatConverting(): Unit = {
