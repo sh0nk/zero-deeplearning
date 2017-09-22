@@ -168,7 +168,7 @@ if __name__ == "__main__":
     batch_mask = np.random.choice(train_size, batch_size)
     x_batch = x_train[batch_mask]
     t_batch = t_train[batch_mask]
- 
+
     grad = network.gradient(x_batch, t_batch)
 
     for key in ("W1", "b1", "W2", "b2"):
