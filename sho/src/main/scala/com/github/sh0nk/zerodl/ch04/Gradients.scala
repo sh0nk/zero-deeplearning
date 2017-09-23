@@ -24,13 +24,14 @@ object Gradients {
 //    }
 
     (0 until x.size).foreach { i =>
-      println(s"idx ${i}")
+      Logger.trace(s"idx ${i}")
       val org = x.data(i)
       x.data(i) = org + delta
       val fHigh = f(x)
       x.data(i) = org - delta
       val fLow = f(x)
       grad.data(i) = (fHigh - fLow) / (2 * delta)
+      Logger.trace(s"grad ${grad.data(i)}")
     }
 
     grad

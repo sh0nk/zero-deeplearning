@@ -1,6 +1,6 @@
 package com.github.sh0nk.zerodl.ch04
 
-import breeze.linalg.{DenseMatrix, DenseVector, max, sum}
+import breeze.linalg.{*, DenseMatrix, DenseVector, max, sum}
 import breeze.numerics._
 
 object MatrixActivationFunctions {
@@ -16,15 +16,11 @@ object MatrixActivationFunctions {
   def identity(x: DenseMatrix[Double]): DenseMatrix[Double] = x
 
   def softmax(x: DenseMatrix[Double]): DenseMatrix[Double] = {
-    // TODO: Bad efficiency
-    (0 until x.rows).foreach { r =>
-      val row = x(r, ::).inner
-      val c = max(row)
-      val exped = exp(row - c)
-      val sum_exp = sum(exped)
-      x(r, ::) := (exped / sum_exp).t
-    }
-    x
+    Logger.trace(s"softmax x: ${x.rows}, ${x.cols}")
+    val c = max(x(*, ::))
+    val exped = exp(x - c * DenseVector.ones[Double](x.cols).t)
+    val sum_exp = sum(exped(*, ::))
+    exped / (sum_exp * DenseVector.ones[Double](x.cols).t)
   }
 
   def main(args: Array[String]): Unit = {

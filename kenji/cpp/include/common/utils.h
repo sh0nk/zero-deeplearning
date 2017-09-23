@@ -23,7 +23,7 @@ Eigen::MatrixXd arange(const double start, const double stop, const double step)
 
 }
 
-Eigen::MatrixXd utils::arange(const double start, const double stop, const double step) {
+inline Eigen::MatrixXd utils::arange(const double start, const double stop, const double step) {
   const int size = (stop - start) / step;
   Eigen::MatrixXd X(1, size);
 
@@ -34,7 +34,7 @@ Eigen::MatrixXd utils::arange(const double start, const double stop, const doubl
   return X;
 }
 
-std::vector<double> utils::convertEigenToStdVector(const Eigen::MatrixXd &X) {
+inline std::vector<double> utils::convertEigenToStdVector(const Eigen::MatrixXd &X) {
   std::vector<double> x(X.rows() * X.cols());
   Eigen::Map<Eigen::MatrixXd>(&x[0], X.rows(), X.cols()) = X;
   return x;

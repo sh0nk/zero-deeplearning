@@ -4,7 +4,7 @@
 
 #include "Network.h"
 #include <iostream>
-#include "common/functions.h"
+#include "common/functions/functions.h"
 
 Network::Network() {}
 
@@ -29,11 +29,11 @@ Eigen::MatrixXd Network::forward(const Eigen::MatrixXd &X) const {
     std::cout << "A" << i << " = " << Ai << std::endl;
 
     if (i == Ws.size() - 1L) break;
-    Zi = functions::sigmoid(Ai);
+    Zi = functions::activation::sigmoid(Ai);
     std::cout << "Z" << i << " = " << Zi << std::endl;
   }
 
-  const auto y = functions::softmax(Ai);
+  const auto y = functions::activation::softmax(Ai);
   return y;
 
   /*

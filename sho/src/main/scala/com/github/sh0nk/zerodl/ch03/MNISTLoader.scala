@@ -1,11 +1,11 @@
 package com.github.sh0nk.zerodl.ch03
 
-import java.io.{DataInputStream, EOFException, FileInputStream}
+import java.io.{BufferedInputStream, _}
 import java.util.zip.GZIPInputStream
 
 class MNISTLoader {
   private def load2DimIntArray(fileName: String, dim2: Int = 784, header: Int = 16): Array[Array[Int]] = {
-    val is = new DataInputStream(new GZIPInputStream(new FileInputStream(fileName)))
+    val is = new DataInputStream(new BufferedInputStream(new GZIPInputStream(new FileInputStream(fileName))))
     is.skipBytes(header) // remove header
 
     val it = new Iterator[Array[Int]] {
@@ -65,14 +65,25 @@ class MNISTLoader {
 }
 
 object MNISTLoader {
+  def showImg(img: Array[Double]) {
+    img.zipWithIndex.foreach { case (v, i) =>
+      if (v > 0) {
+        print(s" 1")
+      } else {
+        print(s" 0")
+      }
+      if ((i + 1) % 28 == 0) println()
+    }
+  }
+
   def main(args: Array[String]): Unit = {
     val loader = new MNISTLoader()
     val img = loader.loadImage("/var/folders/6t/dlnd80jj05s8r8qcjmgm4q5cv9pfnn/T/zerodl-mnist/train-images-idx3-ubyte.gz", normalize = false)
     println(s"img num ${img.length}")
     println(s"img byte length ${img(0).length}")
-    img(0).foreach(v => print(s" ${v}"))
+    showImg(img(0))
     println()
-    img(1).foreach(v => print(s" ${v}"))
+    showImg(img(1))
     println()
 
     val lbl = loader.loadLabel("/var/folders/6t/dlnd80jj05s8r8qcjmgm4q5cv9pfnn/T/zerodl-mnist/train-labels-idx1-ubyte.gz", oneHot = true)

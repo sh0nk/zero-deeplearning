@@ -9,6 +9,7 @@ class NumericalGradientNN(inputSize: Int, hiddenSize: Int, outputSize: Int, weig
   init()
 
   def init(): Unit = {
+    Logger.info(s"inputSize ${inputSize}, hiddenSize ${hiddenSize}, outputSize ${outputSize}")
     w.W1 = randn((inputSize, hiddenSize)) * weightInitStd
     w.b1 = DenseVector.zeros(hiddenSize)
     w.W2 = randn((hiddenSize, outputSize)) * weightInitStd
@@ -16,12 +17,13 @@ class NumericalGradientNN(inputSize: Int, hiddenSize: Int, outputSize: Int, weig
   }
 
   def forward(x: DenseMatrix[Double]): DenseMatrix[Double] = {
-    println(s"x ${x.rows}, ${x.cols}, W1 ${w.W1.rows}, ${w.W1.cols}, b1 ${w.b1.length}")
+    Logger.trace(s"x ${x.rows}, ${x.cols}, W1 ${w.W1.rows}, ${w.W1.cols}, b1 ${w.b1.length}")
     var a1 = x * w.W1
     a1(*, ::) += w.b1
     val z1 = MatrixActivationFunctions.sigmoid(a1)
     var a2 = z1 * w.W2
     a2(*, ::) += w.b2
+    Logger.trace(s"x ${x.rows}, ${x.cols}, W2 ${w.W2.rows}, ${w.W2.cols}, b2 ${w.b2.length} = a2 ${a2.rows} ${a2.cols}")
     outputFunction(a2)
   }
 

@@ -2,12 +2,14 @@ package com.github.sh0nk.zerodl.ch04
 
 import breeze.linalg.{DenseMatrix, DenseVector}
 import breeze.stats.distributions.Rand
-import com.github.sh0nk.zerodl.ch03.MNISTLoader
+import com.github.sh0nk.zerodl.ch03.{Downloader, MNISTLoader}
 
 import scala.reflect.ClassTag
 
 class MiniBatchRunner(loader: MNISTLoader) {
   val hiddenLayer = 50
+  val outputLayer = 10
+
   val batchSize = 100
   val iterNum = 10000
   val learningRate = 0.1
@@ -17,36 +19,37 @@ class MiniBatchRunner(loader: MNISTLoader) {
   var network: NumericalGradientNN = _
 
   private def loadData() = {
-    println("start file loading")
-    val trainData = loader.loadImage("/var/folders/6t/dlnd80jj05s8r8qcjmgm4q5cv9pfnn/T/zerodl-mnist/train-images-idx3-ubyte.gz")
-    val trainLabel = loader.loadLabel("/var/folders/6t/dlnd80jj05s8r8qcjmgm4q5cv9pfnn/T/zerodl-mnist/train-labels-idx1-ubyte.gz", oneHot = false)
-    val testData = loader.loadImage("/var/folders/6t/dlnd80jj05s8r8qcjmgm4q5cv9pfnn/T/zerodl-mnist/t10k-images-idx3-ubyte.gz")
-    val testLabel = loader.loadLabel("/var/folders/6t/dlnd80jj05s8r8qcjmgm4q5cv9pfnn/T/zerodl-mnist/t10k-labels-idx1-ubyte.gz", oneHot = false)
+    Logger.info("start file loading")
+    val dir = s"${Downloader.baseDir}/"
+    val trainData = loader.loadImage(dir + Downloader.keyFile("train_img"))
+    val trainLabel = loader.loadLabel(dir + Downloader.keyFile("train_label"), oneHot = false)
+    val testData = loader.loadImage(dir + Downloader.keyFile("test_img"))
+    val testLabel = loader.loadLabel(dir + Downloader.keyFile("test_label"), oneHot = false)
 
     trainX = MiniBatchRunner.toDenseMatrixFromNestedArray(trainData)
     trainY = MiniBatchRunner.toDenseMatrixFromNestedArray(trainLabel).toDenseVector
     testX = MiniBatchRunner.toDenseMatrixFromNestedArray(testData)
     testY = MiniBatchRunner.toDenseMatrixFromNestedArray(testLabel).toDenseVector
-    println(s"Train (${trainX.rows}, ${trainX.cols}) (${trainY.length})")
-    println(s"Test (${testX.rows}, ${testX.cols}) (${testY.length})")
+    Logger.info(s"Train (${trainX.rows}, ${trainX.cols}) (${trainY.length})")
+    Logger.info(s"Test (${testX.rows}, ${testX.cols}) (${testY.length})")
   }
 
   def run(): Unit = {
     loadData()
-    network = new NumericalGradientNN(trainX.cols, hiddenLayer, trainY.length)
+    network = new NumericalGradientNN(trainX.cols, hiddenLayer, outputLayer)
 
     Range(0, iterNum).foreach { v =>
-      println(s"batch attempt ${v}")
+      Logger.info(s"batch attempt ${v}")
       batch()
     }
   }
 
   def batch(): Unit = {
     var batchX = DenseMatrix.zeros[Double](batchSize, trainX.cols)
-//    println(s"batchX ${batchX.rows}, ${batchX.cols}")
+    Logger.debug(s"batchX ${batchX.rows}, ${batchX.cols}")
     var batchY = DenseVector.zeros[Int](batchSize)
     val randIdx = Rand.permutation(trainX.rows).get().slice(0, batchSize)
-//    println(randIdx)
+    Logger.debug(randIdx)
 
     randIdx.zipWithIndex.foreach { case (v, i) =>
       batchX(i, ::) := trainX(v, ::)
@@ -54,9 +57,10 @@ class MiniBatchRunner(loader: MNISTLoader) {
     }
 
     val diffW = network.numericalGradient(batchX, batchY)
+    Logger.debug(s"d.W1 ${diffW.W1}")
     network.w -= (diffW * learningRate)
     val loss = network.loss(batchX, batchY)
-    println(loss)
+    Logger.info(s"loss val: $loss")
   }
 }
 
@@ -68,7 +72,8 @@ object MiniBatchRunner {
     }
     val cols = array(0).length
 
-    new DenseMatrix[T](rows, cols, array.flatten)
+    // The array is row-major order (DenseMatrix default is column-major)
+    new DenseMatrix[T](rows, cols, array.flatten, 0, cols, true)
   }
 
   def testMatConverting(): Unit = {

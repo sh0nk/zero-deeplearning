@@ -5,12 +5,15 @@ import java.net.URL
 import java.nio.file.Files
 
 class Downloader {
+}
+
+object Downloader {
   val urlBase = "http://yann.lecun.com/exdb/mnist/"
   val keyFile = Map(
-        "train_img" -> "train-images-idx3-ubyte.gz",
-        "train_label" -> "train-labels-idx1-ubyte.gz",
-        "test_img" -> "t10k-images-idx3-ubyte.gz",
-        "test_label" -> "t10k-labels-idx1-ubyte.gz"
+    "train_img" -> "train-images-idx3-ubyte.gz",
+    "train_label" -> "train-labels-idx1-ubyte.gz",
+    "test_img" -> "t10k-images-idx3-ubyte.gz",
+    "test_label" -> "t10k-labels-idx1-ubyte.gz"
   )
   val baseDir = {
     val dir = new File(System.getProperty("java.io.tmpdir"), "zerodl-mnist").toPath
@@ -32,20 +35,18 @@ class Downloader {
   }
 
   def ensureDownloadingAll() = {
-    keyFile.foreach {
+    Downloader.keyFile.foreach {
       case (k, v) =>
-        val file = new File(baseDir.toFile, v).toPath
+        val file = new File(Downloader.baseDir.toFile, v).toPath
         if (!Files.exists(file)) {
-          download(urlBase + v, file.toString)
+          download(Downloader.urlBase + v, file.toString)
         } else {
           println(s"file $v exists")
         }
     }
   }
-}
 
-object Downloader {
   def main(args: Array[String]) = {
-    new Downloader().ensureDownloadingAll()
+    Downloader.ensureDownloadingAll()
   }
 }

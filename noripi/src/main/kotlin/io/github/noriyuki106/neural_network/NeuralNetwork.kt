@@ -16,26 +16,74 @@
  */
 package io.github.noriyuki106.neural_network
 
+import io.github.noriyuki106.extension.flatten
+import io.github.noriyuki106.extension.toMatrixArray
 import io.github.noriyuki106.numkt.Matrix
 import io.github.noriyuki106.numkt.NumericArray
+import io.github.noriyuki106.numkt.function.NumericMatrixFunction
+import io.github.noriyuki106.numkt.function.getMinimumValueByGradientMethod
 import io.github.noriyuki106.numkt.matrixOf
-import io.github.noriyuki106.numkt.plus
+import io.github.noriyuki106.numkt.narrayOf
 import io.github.noriyuki106.numkt.times
 
 class NeuralNetwork(vararg private val layers: NeuralNetworkLayer) {
-    operator fun invoke(input: NumericArray): NumericArray {
-        return this.layers.fold(input) { acc, func -> func(acc) }
+    private val lossEvaluator: (NumericArray, NumericArray) -> NumericMatrixFunction = { input, trueLabel ->
+        { weights ->
+            val weightsArray = weights.toMatrixArray(
+                    sizes = this.layers.map { it.outputSize }.toIntArray()
+            )
+
+            crossEntropyError(this(input, weightsArray), trueLabel)
+        }
+    }
+
+    // TODO: it is not good to place weights here
+    private var weights: Array<Matrix> = this.layers.map {
+        Matrix.gaussianRandom(it.inputSize, it.outputSize)
+    }.toTypedArray()
+
+    operator fun invoke(input: NumericArray, weights: Array<Matrix> = this.weights): NumericArray {
+        return this.layers.foldIndexed(input) { idx, acc, layer ->
+            layer(acc, weights[idx])
+        }
+    }
+
+    fun train(input: NumericArray, trueLabel: NumericArray): NumericArray {
+        println("before:" + this(input))
+        val newWeights = this.lossEvaluator(input, trueLabel).getMinimumValueByGradientMethod(
+                initialValue = this.weights.flatten()
+        )
+
+        this.weights = newWeights.toMatrixArray(
+                sizes = this.layers.map { it.outputSize }.toIntArray()
+        )
+
+        return this(input)
     }
 }
 
-data class NeuralNetworkLayer(val weight: Matrix,
-                              val bias: NumericArray,
-                              val activationFunction: ActivationFunction = sigmoid.toActivationFunction()) {
-    operator fun invoke(input: NumericArray): NumericArray {
+class NeuralNetworkLayer(private val bias: NumericArray,
+                         internal val inputSize: Int,
+                         internal val outputSize: Int,
+                         private val activationFunction: ActivationFunction = sigmoid.toActivationFunction()) {
+
+    constructor(bias: Double = 0.0,
+                inputSize: Int,
+                outputSize: Int,
+                activationFunction: ActivationFunction = sigmoid.toActivationFunction()) :
+
+            this(
+                    bias = narrayOf(*(0 until outputSize).map { bias }.toDoubleArray()),
+                    inputSize = inputSize,
+                    outputSize = outputSize,
+                    activationFunction = activationFunction
+            )
+
+    operator fun invoke(input: NumericArray, weight: Matrix): NumericArray {
         // a1 = 1 * b1 + x1 * w11 + x2 * w21
         // a2 = 1 * b2 + x1 * w12 + x2 * w22
         // a3 = 1 * b3 + x1 * w13 + x2 * x23
-        val beforeActivation = (matrixOf(input) * this.weight).rowIterator().next() + this.bias
+        val beforeActivation = (matrixOf(input) * weight).rowIterator().next() + this.bias
 
         return beforeActivation.activateBy(this.activationFunction)
     }
