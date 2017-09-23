@@ -2,7 +2,7 @@ package com.github.sh0nk.zerodl.ch05
 
 import breeze.linalg.{*, DenseMatrix, DenseVector, sum}
 import breeze.numerics.exp
-import com.github.sh0nk.zerodl.ch04.{MatrixActivationFunctions, MatrixLossFunctions}
+import com.github.sh0nk.zerodl.ch04.{Logger, MatrixActivationFunctions, MatrixLossFunctions}
 
 case class SoftmaxWithLoss() extends OutputWithLoss(MatrixActivationFunctions.softmax) {
   override def backward(dout: Double = 1): DenseMatrix[Double] = {
@@ -33,8 +33,8 @@ case class Affine(var W: DenseMatrix[Double], var b: DenseVector[Double]) extend
   override def forward(x: DenseMatrix[Double]): DenseMatrix[Double] = {
     this.x = x
     var mul = x * W
-    println(mul.rows)
-    println(b.length)
+    Logger.trace(mul.rows)
+    Logger.trace(b.length)
 //    mul(::, *) += b
     mul(*, ::) += b // add row vec to all the rows
     mul

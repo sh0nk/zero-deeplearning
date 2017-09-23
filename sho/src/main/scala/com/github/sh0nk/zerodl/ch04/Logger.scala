@@ -12,10 +12,12 @@ object Logger {
     val TRACE = Value(4)
   }
 
-  def error[T](a: T) = if (logLevel.id >= LogLevels.ERROR.id) println(a)
-  def warn[T](a: T) = if (logLevel.id >= LogLevels.WARN.id) println(a)
-  def info[T](a: T) = if (logLevel.id >= LogLevels.INFO.id) println(a)
-  def debug[T](a: T) = if (logLevel.id >= LogLevels.DEBUG.id) println(a)
-  def trace[T](a: T) = if (logLevel.id >= LogLevels.TRACE.id) println(a)
+  def error[T](a: T) = println2(a, LogLevels.ERROR)
+  def warn[T](a: T) = println2(a, LogLevels.WARN)
+  def info[T](a: T) = println2(a, LogLevels.INFO)
+  def debug[T](a: T) = println2(a, LogLevels.DEBUG)
+  def trace[T](a: T) = println2(a, LogLevels.TRACE)
 
+  private def println2[T](a: T, logLevels: Logger.LogLevels.Value) =
+    if (logLevel.id >= logLevels.id) println(s"$logLevels: $a")
 }
