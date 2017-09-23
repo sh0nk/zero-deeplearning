@@ -5,9 +5,9 @@ def im2col(input_data, filter_h, filter_w, stride=1, pad=0):
   # get shape of input data
   N, C, H, W = input_data.shape
   # calc output shape
-  out_h = (H + (2 * pad) - filter_h) // 2 + 1
-  out_w = (W + (2 * pad) - filter_w) // 2 + 1
-
+  out_h = (H + (2 * pad) - filter_h) // stride + 1
+  out_w = (W + (2 * pad) - filter_w) // stride + 1
+  
   # padding data
   # not to pad about N and C (only about H and W)
   img = np.pad(input_data, [(0, 0), (0, 0), (pad, pad), (pad, pad)], "constant")
