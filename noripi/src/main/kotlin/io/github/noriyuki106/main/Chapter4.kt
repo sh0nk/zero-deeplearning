@@ -16,6 +16,7 @@
  */
 package io.github.noriyuki106.main
 
+import io.github.noriyuki106.data.Mnist
 import io.github.noriyuki106.neural_network.NeuralNetwork
 import io.github.noriyuki106.neural_network.NeuralNetworkLayer
 import io.github.noriyuki106.neural_network.crossEntropyError
@@ -29,6 +30,8 @@ import io.github.noriyuki106.numkt.function.getMinimumValueByGradientMethod
 import io.github.noriyuki106.numkt.function.numericalDiff
 import io.github.noriyuki106.numkt.function.numericalGradient
 import io.github.noriyuki106.numkt.narrayOf
+import java.util.Date
+import java.util.Random
 
 fun main(args: Array<String>) {
 //    sample4_2_1()
@@ -37,8 +40,8 @@ fun main(args: Array<String>) {
 //    sample4_3_3()
 //    sample4_4()
 //    sample4_4_1()
-    sample4_4_2()
-//    sample4_5()
+//    sample4_4_2()
+    sample4_5()
 }
 
 private fun sample4_2_1() {
@@ -100,10 +103,12 @@ private fun sample4_4_2() {
     )
 
     val trueLabel = narrayOf(0, 0, 1)
-    println(simpleNet(narrayOf(0.6, 0.9), trueLabel = trueLabel))
+    println(simpleNet.train(narrayOf(0.6, 0.9), trueLabel = trueLabel))
 }
 
 private fun sample4_5() {
+    val random = Random()
+    val mnist = Mnist()
     val twoLayerNet = NeuralNetwork(
             NeuralNetworkLayer(
                     inputSize = 784,
@@ -115,4 +120,14 @@ private fun sample4_5() {
                     activationFunction = softmax
             )
     )
+
+    val data = mnist[random.nextInt(Mnist.DATA_SIZE)]
+    println(data.trueLabel)
+    data.print()
+
+    println("data training started")
+    val now = Date()
+    val result = twoLayerNet.train(data.imageAsNumericArray, data.trueLabel)
+    println("data training finished in ${Date().time - now.time}sec")
+    println(result)
 }
