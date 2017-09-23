@@ -36,6 +36,49 @@ class Convolution:
     out = out.reshape(N, out_h, out_w, -1).transpose(0, 3, 1, 2)
     return out
 
+class Pooling:
+  """
+  >>> x = np.array([[ \
+    [                 \
+      [1, 2, 3, 0],   \
+      [0, 1, 2, 4],   \
+      [1, 0, 4, 2],   \
+      [3, 2, 0, 1]    \
+    ],                \
+    [                 \
+      [3, 0, 6, 5],   \
+      [4, 2, 4, 3],   \
+      [3, 0, 1, 0],   \
+      [2, 3, 3, 1]    \
+    ],                \
+    [                 \
+      [4, 2, 1, 2],   \
+      [0, 1, 0, 4],   \
+      [3, 0, 6, 2],   \
+      [4, 2, 4, 5]    \
+    ]                 \
+  ]])
+  >>> pool_h = 2
+  >>> pool_w = 2
+  >>> stride = 2
+  >>> Pooling(pool_h, pool_w, stride).forward(x).reshape(-1)
+  array([ 2.,  4.,  3.,  4.,  4.,  6.,  3.,  3.,  4.,  4.,  4.,  6.])
+  """
+  def __init__(self, pool_h, pool_w, stride=1):
+    self.pool_h = pool_h
+    self.pool_w = pool_w
+    self.stride = stride
+
+  def forward(self, x):
+    N, C, H, W = x.shape
+    out_h = (H - self.pool_h) // self.stride + 1
+    out_w = (W - self.pool_w) // self.stride + 1
+    col = im2col(x, self.pool_h, self.pool_w, self.stride, 0)
+    col = col.reshape(-1, self.pool_h * self.pool_w)
+    out = np.max(col, axis=1)
+    out = out.reshape(N, out_h, out_w, C).transpose(0, 3, 1, 2)
+    return out
+
 def _test():
   import doctest
   doctest.testmod()
