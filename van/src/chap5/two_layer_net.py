@@ -125,7 +125,7 @@ class TwoLayerNet:
     >>> grad_numerical = network.numerical_gradient(x_batch, t_batch)
     >>> grad_backprop = network.gradient(x_batch, t_batch)
     >>> diffs = list(map(lambda idx: (idx, np.abs(grad_backprop[idx] - grad_numerical[idx])), grad_numerical.keys()))
-    >>> sum(map(lambda diff: np.sum(diff[1] >= 1e-9), diffs))
+    >>> sum(map(lambda diff: np.sum(diff[1] >= 1e-8), diffs))
     0
     """
     # forward
