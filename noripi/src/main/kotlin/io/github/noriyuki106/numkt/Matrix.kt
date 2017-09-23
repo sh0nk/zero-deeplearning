@@ -3,7 +3,6 @@
  */
 package io.github.noriyuki106.numkt
 
-import kotlinx.coroutines.experimental.yield
 import java.util.Arrays
 import kotlin.coroutines.experimental.buildIterator
 
@@ -12,6 +11,14 @@ class Matrix(val values: Array<out NumericArray>) {
     val colSize = this.values.firstOrNull()?.length ?: 0
 
     val shape = "(${this.rowSize}, ${this.colSize})"
+
+    companion object {
+        fun gaussianRandom(rowSize: Int, colSize: Int): Matrix {
+            return Matrix((0 until rowSize).map {
+                NumericArray.gaussianRandom(colSize)
+            }.toTypedArray())
+        }
+    }
 
     override fun toString(): String {
         return Arrays.deepToString(this.values)
@@ -24,6 +31,8 @@ class Matrix(val values: Array<out NumericArray>) {
             yield(this@Matrix.values[it])
         }
     }
+
+    fun flatten(): NumericArray = this.values.toList().toTypedArray().flatten()
 
     fun colIterator(): Iterator<NumericArray> = buildIterator {
         (0 until this@Matrix.colSize).forEach { idx ->
@@ -40,8 +49,11 @@ operator fun Matrix.plus(that: Matrix): Matrix {
     return matrixOf(*this.values.mapIndexed { idx, arr -> arr + that.values[idx] }.toTypedArray())
 }
 
-operator fun Matrix.plus(that: Double): Matrix = matrixOf(*this.values.map { it + that }.toTypedArray())
-operator fun Matrix.plus(that: Int): Matrix = matrixOf(*this.values.map { it + that }.toTypedArray())
+operator fun Matrix.plus(that: Double): Matrix = matrixOf(
+        *this.values.map { it + that }.toTypedArray())
+
+operator fun Matrix.plus(that: Int): Matrix = matrixOf(
+        *this.values.map { it + that }.toTypedArray())
 
 operator fun Matrix.minus(that: Matrix): Matrix {
     if (this.rowSize != that.rowSize || this.colSize != that.colSize) throw IllegalArgumentException()
@@ -49,13 +61,21 @@ operator fun Matrix.minus(that: Matrix): Matrix {
     return matrixOf(*this.values.mapIndexed { idx, arr -> arr - that.values[idx] }.toTypedArray())
 }
 
-operator fun Matrix.minus(that: Double): Matrix = matrixOf(*this.values.map { it - that }.toTypedArray())
-operator fun Matrix.minus(that: Int): Matrix = matrixOf(*this.values.map { it - that }.toTypedArray())
+operator fun Matrix.minus(that: Double): Matrix = matrixOf(
+        *this.values.map { it - that }.toTypedArray())
 
-operator fun Matrix.times(that: Double): Matrix = matrixOf(*this.values.map { it * that }.toTypedArray())
-operator fun Matrix.times(that: Int): Matrix = matrixOf(*this.values.map { it * that }.toTypedArray())
+operator fun Matrix.minus(that: Int): Matrix = matrixOf(
+        *this.values.map { it - that }.toTypedArray())
 
-operator fun Matrix.div(that: Double): Matrix = matrixOf(*this.values.map { it / that }.toTypedArray())
+operator fun Matrix.times(that: Double): Matrix = matrixOf(
+        *this.values.map { it * that }.toTypedArray())
+
+operator fun Matrix.times(that: Int): Matrix = matrixOf(
+        *this.values.map { it * that }.toTypedArray())
+
+operator fun Matrix.div(that: Double): Matrix = matrixOf(
+        *this.values.map { it / that }.toTypedArray())
+
 operator fun Matrix.div(that: Int): Matrix = matrixOf(*this.values.map { it / that }.toTypedArray())
 
 operator fun Matrix.times(that: Matrix): Matrix {

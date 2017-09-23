@@ -16,14 +16,34 @@
  */
 package io.github.noriyuki106.extension
 
+import io.github.noriyuki106.numkt.Matrix
+import io.github.noriyuki106.numkt.matrixOf
+
 fun ByteArray.chunk(size: Int): Array<ByteArray> {
     val list = mutableListOf<ByteArray>()
 
     var rest = this.toList()
-    while (rest.size > 0) {
+    while (rest.isNotEmpty()) {
         list.add(rest.take(size).toByteArray())
         rest = rest.drop(size)
     }
 
     return list.toTypedArray()
 }
+
+fun DoubleArray.chunk(size: Int): Array<DoubleArray> {
+    val list = mutableListOf<DoubleArray>()
+
+    var rest = this.toList()
+    while (rest.isNotEmpty()) {
+        list.add(rest.take(size).toDoubleArray())
+        rest = rest.drop(size)
+    }
+
+    return list.toTypedArray()
+}
+
+fun Array<Matrix>.flatten(): Matrix = matrixOf(*this.map { it.flatten() }.toTypedArray())
+fun Matrix.toMatrixArray(sizes: IntArray) = this.values.mapIndexed { idx, weight ->
+    matrixOf(*weight.chunk(sizes[idx]))
+}.toTypedArray()

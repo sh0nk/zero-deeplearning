@@ -16,17 +16,21 @@
  */
 package io.github.noriyuki106.data
 
-import io.github.noriyuki106.extension.chunk
 import io.github.noriyuki106.extension.toUnsigned
+import io.github.noriyuki106.numkt.NumericArray
+import io.github.noriyuki106.numkt.narrayOf
 import java.io.File
 
 private const val TRAIN_IMAGE_FILE_PATH = "data/mnist/train-images-idx3-ubyte"
 private const val TRAIN_LABEL_FILE_PATH = "data/mnist/train-labels-idx1-ubyte"
 private const val ROW_SIZE = 28
 private const val ONE_DATA_SIZE = ROW_SIZE * ROW_SIZE
-private const val DATA_SIZE = 60000
 
 class Mnist {
+    companion object {
+        const val DATA_SIZE = 60000
+    }
+
     private val imageContent: ByteArray = File(TRAIN_IMAGE_FILE_PATH).readBytes()
             .drop(16)
             .toByteArray()
@@ -36,19 +40,19 @@ class Mnist {
             .toByteArray()
 
     operator fun get(i: Int) = MnistData.instanceAt(i) ?: MnistData(
-            image = this.imageContent.sliceArray(ONE_DATA_SIZE * i .. ONE_DATA_SIZE * (i + 1) - 1),
+            image = this.imageContent.sliceArray(ONE_DATA_SIZE * i until ONE_DATA_SIZE * (i + 1)),
             label = this.labelContent[i],
             index = i
     )
 }
 
-class MnistData(private val image: ByteArray, private val label: Byte, private val index: Int) {
+class MnistData(private val image: ByteArray, private val label: Byte, index: Int) {
     init {
         cachedData[index] = this
     }
 
     companion object {
-        private var cachedData = arrayOfNulls<MnistData>(DATA_SIZE)
+        private var cachedData = arrayOfNulls<MnistData>(Mnist.DATA_SIZE)
 
         fun instanceAt(i: Int): MnistData? {
             return cachedData[i]
@@ -68,4 +72,8 @@ class MnistData(private val image: ByteArray, private val label: Byte, private v
         }
     }
 
+    val imageAsNumericArray: NumericArray = narrayOf(*this.image.map { it.toInt() }.toIntArray())
+
+    val trueLabel: NumericArray = narrayOf(
+            *(0 until 10).map { if (it == this.label.toInt()) 1 else 0 }.toIntArray())
 }
