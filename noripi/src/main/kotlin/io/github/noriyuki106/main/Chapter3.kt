@@ -16,7 +16,6 @@
  */
 package io.github.noriyuki106.main
 
-//import io.github.noriyuki106.data.Mnist
 import io.github.noriyuki106.data.Mnist
 import io.github.noriyuki106.neural_network.activateBy
 import io.github.noriyuki106.neural_network.relu
