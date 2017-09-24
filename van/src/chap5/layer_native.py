@@ -170,8 +170,10 @@ class Affine:
     self.x = None
     self.dW = None
     self.db = None
-    
+
   def forward(self, x):
+    self.original_x_shape = x.shape
+    x = x.reshape(x.shape[0], -1)
     self.x = x
     return np.dot(x, self.W) + self.b
 
@@ -179,6 +181,7 @@ class Affine:
     dx = np.dot(dout, self.W.T)
     self.dW = np.dot(self.x.T, dout)
     self.db = np.sum(dout, axis=0)
+    dx = dx.reshape(*self.original_x_shape)
     return dx
 
 class SoftmaxWithLoss:
@@ -199,7 +202,7 @@ class SoftmaxWithLoss:
   def __init__(self):
     self.y = None
     self.t = None
-    
+
   def forward(self, x, t):
     self.y = softmax(x)
     self.t = t
