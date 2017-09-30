@@ -17,10 +17,15 @@ libraryDependencies  ++= Seq(
 
   // The visualization library is distributed separately as well.
   // It depends on LGPL code
-  "org.scalanlp" %% "breeze-viz" % "0.13.1"
+  "org.scalanlp" %% "breeze-viz" % "0.13.1",
+
+  // https://github.com/sh0nk/matplotlib4j
+  // Need local build and deploy
+  "com.github.sh0nk.matplotlib4j" % "matplotlib4j" % "1.0.0-SNAPSHOT"
 
   //  "com.quantifind" %% "wisp" % "0.0.4"
 )
 
 
+resolvers += Resolver.mavenLocal
 resolvers += "Sonatype Releases" at "https://oss.sonatype.org/content/repositories/releases/"

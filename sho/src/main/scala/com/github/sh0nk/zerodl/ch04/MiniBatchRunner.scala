@@ -2,6 +2,7 @@ package com.github.sh0nk.zerodl.ch04
 
 import breeze.linalg.{DenseMatrix, DenseVector}
 import breeze.stats.distributions.Rand
+import com.github.sh0nk.matplotlib4j.PlotImpl
 import com.github.sh0nk.zerodl.ch03.{Downloader, MNISTLoader}
 
 import scala.reflect.ClassTag
@@ -18,8 +19,11 @@ class MiniBatchRunner(loader: MNISTLoader) {
   var trainY, testY: DenseVector[Int] = _ // Internal t in NN is 10 class, but this Y is not one hot
   var network: NumericalGradientNN = _
 
+  var accTrain, accTest: Seq[Double] = Seq()
+
   private def loadData() = {
     Logger.info("start file loading")
+    Downloader.ensureDownloadingAll()
     val dir = s"${Downloader.baseDir}/"
     val trainData = loader.loadImage(dir + Downloader.keyFile("train_img"))
     val trainLabel = loader.loadLabel(dir + Downloader.keyFile("train_label"), oneHot = false)
@@ -41,7 +45,10 @@ class MiniBatchRunner(loader: MNISTLoader) {
     Range(0, iterNum).foreach { v =>
       Logger.info(s"batch attempt ${v}")
       batch()
+      collectAccuracy()
+      drawAccuracy()
     }
+    drawAccuracy()
   }
 
   def batch(): Unit = {
@@ -61,6 +68,21 @@ class MiniBatchRunner(loader: MNISTLoader) {
     network.w -= (diffW * learningRate)
     val loss = network.loss(batchX, batchY)
     Logger.info(s"loss val: $loss")
+  }
+
+  def collectAccuracy(): Unit = {
+    accTrain :+= network.accuracy(trainX, trainY)
+    accTest :+= network.accuracy(testX, testY)
+  }
+
+  def drawAccuracy(): Unit = {
+    import collection.JavaConverters._
+
+    val plt = new PlotImpl()
+    plt.title("SVG (Numeric) Accuracy")
+    plt.plot().add(accTrain.indices.map(Int.box).toList.asJava, accTrain.map(Double.box).toList.asJava).linestyle("--")
+    plt.plot().add(accTest.indices.map(Int.box).toList.asJava, accTest.map(Double.box).toList.asJava).linestyle("==")
+    plt.show()
   }
 }
 
