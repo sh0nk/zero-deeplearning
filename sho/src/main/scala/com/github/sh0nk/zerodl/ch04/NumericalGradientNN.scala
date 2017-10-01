@@ -1,7 +1,6 @@
 package com.github.sh0nk.zerodl.ch04
 
-import breeze.linalg.{*, DenseMatrix, DenseVector, randn, randomDouble}
-import com.github.sh0nk.zerodl.ch03.ActivationFunctions
+import breeze.linalg.{*, DenseMatrix, DenseVector, argmax, randn, sum}
 
 class NumericalGradientNN(inputSize: Int, hiddenSize: Int, outputSize: Int, weightInitStd: Double = 0.01) {
   var w = new Weight()
@@ -44,6 +43,12 @@ class NumericalGradientNN(inputSize: Int, hiddenSize: Int, outputSize: Int, weig
     grad.b2 = Gradients.numericalGradient(f, w.b2.toDenseMatrix).toDenseVector
 
     grad
+  }
+
+  def accuracy(x: DenseMatrix[Double], t: DenseVector[Int]): Double = {
+    val y = predict(x)
+    val mask = argmax(y(*, ::)).map(v => if (v != 0) true else false) & t.map(v => if (v != 0) true else false)
+    sum(mask.map(v => if (v) 1.0 else 0.0)) / x.rows
   }
 
 }

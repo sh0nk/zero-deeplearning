@@ -83,7 +83,7 @@ class MultiLayerNet:
     <class 'numpy.float64'>
     """
     weight_decay = 0.0
-    for i in range(1, int(len(self.params) / 2) + 1):
+    for i in range(1, len(self.params) // 2 + 1):
       W = self.params["W{}".format(i)]
       weight_decay += np.sum(W * W)
     weight_decay = self.weight_decay_lambda * weight_decay / 2
@@ -142,7 +142,7 @@ class MultiLayerNet:
 
     # set gradient
     grads = {}
-    for i in range(1, int(len(self.params) / 2) + 1):
+    for i in range(1, len(self.params) // 2 + 1):
       layer = self.layers["Affine{}".format(i)]
       grads["W{}".format(i)] = layer.dW + self.weight_decay_lambda * layer.W
       grads["b{}".format(i)] = layer.db

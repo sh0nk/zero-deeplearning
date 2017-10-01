@@ -1,6 +1,6 @@
 package com.github.sh0nk.zerodl.ch05
 
-import breeze.linalg.{DenseMatrix, DenseVector, randn}
+import breeze.linalg.{*, DenseMatrix, DenseVector, argmax, randn, sum}
 import com.github.sh0nk.zerodl.ch04.Logger
 
 class BackpropagationGradientNN(inputSize: Int, hiddenSize: Int, outputSize: Int, weightInitStd: Double = 0.01) {
@@ -59,6 +59,12 @@ class BackpropagationGradientNN(inputSize: Int, hiddenSize: Int, outputSize: Int
     grad.b2 = layers(2).asInstanceOf[Affine].db
 
     grad
+  }
+
+  def accuracy(x: DenseMatrix[Double], t: DenseMatrix[Int]): Double = {
+    val y = predict(x)
+    val mask = argmax(y(*, ::)).map(v => if (v != 0) true else false) & argmax(t(*, ::)).map(v => if (v != 0) true else false)
+    sum(mask.map(if(_) 1.0 else 0.0)) / x.rows
   }
 
 }

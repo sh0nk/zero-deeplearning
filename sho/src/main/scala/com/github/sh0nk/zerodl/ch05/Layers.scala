@@ -35,7 +35,6 @@ case class Affine(var W: DenseMatrix[Double], var b: DenseVector[Double]) extend
     var mul = x * W
     Logger.trace(mul.rows)
     Logger.trace(b.length)
-//    mul(::, *) += b
     mul(*, ::) += b // add row vec to all the rows
     mul
   }
@@ -68,6 +67,7 @@ case class ReLU() extends Layer {
 
   override def forward(x: DenseMatrix[Double]): DenseMatrix[Double] = {
     maskIdx = x <:= DenseMatrix.zeros[Double](x.rows, x.cols)
+//    Logger.debug(maskIdx)
     mask(x)
   }
 
