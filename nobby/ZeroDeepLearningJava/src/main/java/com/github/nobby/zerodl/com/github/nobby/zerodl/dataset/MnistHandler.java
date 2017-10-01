@@ -1,5 +1,6 @@
 package com.github.nobby.zerodl.com.github.nobby.zerodl.dataset;
 
+import org.jblas.DoubleMatrix;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -9,6 +10,7 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
 import java.util.zip.GZIPInputStream;
 
 /**
@@ -34,12 +36,12 @@ public class MnistHandler {
         download(TEST_LABEL_FILE);
 
         double[][] trainData = getFeatures(TRAIN_IMAGE_FILE, normalize);
-        int[][] trainLabel = getLabels(TRAIN_IMAGE_FILE);
+        ArrayList<Label> trainLabelList = getLabels(TRAIN_LABEL_FILE);
 
         double[][] testData = getFeatures(TEST_IMAGE_FILE, normalize);
-        int[][] testLabel = getLabels(TEST_LABEL_FILE);
+        ArrayList<Label> testLabelList = getLabels(TEST_LABEL_FILE);
 
-        MnistData mnistData = new MnistData(trainData, trainLabel, testData, testLabel);
+        MnistData mnistData = new MnistData(trainData, trainLabelList, testData, testLabelList);
         logger.info("----- load MNIST data end.");
         return mnistData;
     }
@@ -89,21 +91,22 @@ public class MnistHandler {
         return features;
     }
 
-    private int[][] getLabels(String fileName) throws IOException {
+    private ArrayList<Label> getLabels(String fileName) throws IOException {
+        ArrayList<Label> labelList = new ArrayList<>();
         DataInputStream is = new DataInputStream(new GZIPInputStream((new FileInputStream(BASE_PATH + fileName))));
         is.readInt();
         int numLabels = is.readInt();
 
-        int labels[][] = new int[numLabels][10];
         for (int i = 0; i < numLabels; i++) {
             int labelValue = is.readUnsignedByte();
-            int[] oneHotLabel = new int[10];
+            double[] oneHotLabel = new double[10];
             for (int j = 0; j < 10; j++) {
-                oneHotLabel[j] = (j == labelValue - 1) ? 1 : 0;
+                oneHotLabel[j] = (j == labelValue) ? 1 : 0;
             }
-            labels[i] = oneHotLabel;
+            Label label = new Label(labelValue, new DoubleMatrix(oneHotLabel).transpose());
+            labelList.add(label);
         }
-        return labels;
+        return labelList;
     }
 
 
@@ -129,7 +132,7 @@ public class MnistHandler {
                 out.write(data, 0, ret);
             }
         } else {
-            logger.info("{} is already exists, skip download process...");
+            logger.info("{} is already exists, skip download process...", BASE_PATH + fileName);
         }
     }
 }

@@ -31,12 +31,16 @@ jar {
 
 repositories {
     mavenCentral()
+    mavenLocal()
 }
 
 dependencies {
     //compile 'org.apache.commons:commons-math3:3.6.1'
+    compile 'org.jblas:jblas:1.2.4'
 
     compile 'org.springframework.boot:spring-boot-starter'
+
+    //compile 'com.github.sh0nk.matplotlib4j:matplotlib4j:1.0.0-SNAPSHOT'
 
     testCompile group: 'junit', name: 'junit', version: '4.11'
 }
