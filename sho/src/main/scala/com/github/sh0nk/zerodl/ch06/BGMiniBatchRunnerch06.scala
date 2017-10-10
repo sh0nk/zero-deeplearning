@@ -5,7 +5,7 @@ import breeze.numerics.abs
 import breeze.stats.distributions.Rand
 import com.github.sh0nk.zerodl.ch03.{Downloader, MNISTLoader}
 import com.github.sh0nk.zerodl.ch04.{Logger, MiniBatchRunner, NumericalGradientNN}
-import com.github.sh0nk.zerodl.ch06.{BackpropagationGradientNNch06, WeightLayer}
+import com.github.sh0nk.zerodl.ch06._
 
 class BGMiniBatchRunnerch06(loader: MNISTLoader) {
   val hiddenLayer = 50
@@ -18,6 +18,8 @@ class BGMiniBatchRunnerch06(loader: MNISTLoader) {
   var trainX, testX: DenseMatrix[Double] = _
   var trainY, testY: DenseMatrix[Int] = _
   var network: BackpropagationGradientNNch06 = _
+//  val optimizer: Optimizer = SGD(learningRate)
+  val optimizer: Optimizer = Momentum()
 
   private def loadData() = {
     Logger.info("start file loading")
@@ -69,16 +71,7 @@ class BGMiniBatchRunnerch06(loader: MNISTLoader) {
 
     Logger.debug(s"d.W1 ${network.layers.head.asInstanceOf[WeightLayer].dW("w")}")
 
-    network.layers.filter(_.isInstanceOf[WeightLayer]).map(_.asInstanceOf[WeightLayer]).foreach { layer =>
-      layer.W.keys.map { key =>
-        Logger.trace(s"gradientDescent key for W: $key")
-        layer.W(key) -= layer.dW(key) * learningRate
-      }
-      layer.Wb.keys.map { key =>
-        Logger.trace(s"gradientDescent key for Wb: $key")
-        layer.Wb(key) -= layer.dWb(key) * learningRate
-      }
-    }
+    optimizer.optimize(network.layers)
   }
 }
 
