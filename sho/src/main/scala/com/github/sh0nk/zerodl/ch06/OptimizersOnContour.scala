@@ -34,7 +34,7 @@ class OptimizersOnContour(optimizer: Optimizer) {
   def addPlot(plt: Plot): Unit = {
     Range(0, 30).foreach(_ -> iter)
     import collection.JavaConverters._
-    plt.plot().add(xHistory.map(Double.box).toList.asJava, yHistory.map(Double.box).toList.asJava, "o-")
+    plt.plot().add(xHistory.map(Double.box).toList.asJava, yHistory.map(Double.box).toList.asJava, "ro-")
   }
 
 }
