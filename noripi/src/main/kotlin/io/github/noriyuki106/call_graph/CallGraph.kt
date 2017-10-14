@@ -17,9 +17,10 @@
 package io.github.noriyuki106.call_graph
 
 import io.github.noriyuki106.call_graph.layer.CallGraphLayer
+import io.github.noriyuki106.numkt.NumericArray
 
 class CallGraph(private vararg val callGraphLayer: CallGraphLayer) {
-    fun forward(getArgument: () -> Pair<Double, Double>): ForwardCallGraphInvocation {
+    fun forward(getArgument: () -> NumericArray): ForwardCallGraphInvocation {
         return ForwardCallGraphInvocation(
                 results = listOf(),
                 callGraphLayers = this.callGraphLayer.toList()
@@ -37,12 +38,12 @@ class CallGraph(private vararg val callGraphLayer: CallGraphLayer) {
 class ForwardCallGraphInvocation(private val results: List<Double>,
                                  private val callGraphLayers: List<CallGraphLayer>) {
 
-    fun then(getArgument: (List<Double>) -> Pair<Double, Double>): ForwardCallGraphInvocation {
+    fun then(getArgument: (List<Double>) -> NumericArray): ForwardCallGraphInvocation {
         val arguments = getArgument(this.results)
 
         return ForwardCallGraphInvocation(
                 this.results + listOf(this.callGraphLayers.first()
-                        .forward(arguments.first, arguments.second)),
+                        .forward(arguments)),
                 this.callGraphLayers.drop(1)
         )
     }
@@ -50,10 +51,10 @@ class ForwardCallGraphInvocation(private val results: List<Double>,
     fun done(): Double = this.results.last()
 }
 
-class BackwardCallGraphInvocation(private val results: List<Pair<Double, Double>>,
+class BackwardCallGraphInvocation(private val results: List<NumericArray>,
                                   private val callGraphLayers: List<CallGraphLayer>) {
 
-    fun then(getArgument: (List<Pair<Double, Double>>) -> Double): BackwardCallGraphInvocation {
+    fun then(getArgument: (List<NumericArray>) -> Double): BackwardCallGraphInvocation {
         val argument = getArgument(this.results)
 
         return BackwardCallGraphInvocation(

@@ -16,12 +16,11 @@
  */
 package io.github.noriyuki106.call_graph.layer
 
+import io.github.noriyuki106.numkt.NumericArray
+
 abstract class CallGraphLayer {
-    protected lateinit var x: Number
-    protected lateinit var y: Number
+    protected lateinit var x: NumericArray
 
-    abstract fun forward(x: Double, y: Double): Double
-    abstract fun backward(dout: Double): Pair<Double, Double>
-
-    operator fun invoke(x: Double, y: Double): Double = this.forward(x, y)
+    abstract fun forward(x: NumericArray): Double
+    abstract fun backward(dout: Double): NumericArray
 }

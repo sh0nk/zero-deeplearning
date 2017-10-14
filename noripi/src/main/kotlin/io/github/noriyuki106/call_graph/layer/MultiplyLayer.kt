@@ -16,19 +16,17 @@
  */
 package io.github.noriyuki106.call_graph.layer
 
-class MultiplyLayer : CallGraphLayer() {
-    override fun forward(x: Double, y: Double): Double {
-        this.x = x
-        this.y = y
+import io.github.noriyuki106.numkt.NumericArray
 
-        return this.x.toDouble() * this.y.toDouble()
+class MultiplyLayer : CallGraphLayer() {
+    override fun forward(x: NumericArray): Double {
+        this.x = x
+        return this.x.product()
     }
 
-    override fun backward(dout: Double): Pair<Double, Double> {
-        val dx = dout * this.y.toDouble()
-        val dy = dout * this.x.toDouble()
-
-        return dx to dy
+    override fun backward(dout: Double): NumericArray {
+        val sum = this.x.sum()
+        return this.x.map { (sum - it) * dout }
     }
 
 }

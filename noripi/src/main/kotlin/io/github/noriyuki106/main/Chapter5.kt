@@ -19,6 +19,7 @@ package io.github.noriyuki106.main
 import io.github.noriyuki106.call_graph.CallGraph
 import io.github.noriyuki106.call_graph.layer.AddLayer
 import io.github.noriyuki106.call_graph.layer.MultiplyLayer
+import io.github.noriyuki106.numkt.narrayOf
 
 fun main(args: Array<String>) {
     sample5_4_1()
@@ -33,13 +34,13 @@ private fun sample5_4_1() {
     val callGraph = CallGraph(MultiplyLayer(), MultiplyLayer())
 
     val result = callGraph
-            .forward { apple to appleNum }
-            .then { it[0] to tax }
+            .forward { narrayOf(apple, appleNum) }
+            .then { narrayOf(it[0], tax) }
             .done()
 
     val backwardResults = callGraph
             .backward { 1.0 }
-            .then { it[0].first }
+            .then { it[0][0] }
             .done()
 
     println(result)
@@ -61,17 +62,17 @@ private fun sample5_4_2() {
     )
 
     val result = callGraph
-            .forward { apple to appleNum }
-            .then { mikan to mikanNum }
-            .then { it[0] to it[1] }
-            .then { it[2] to tax }
+            .forward { narrayOf(apple, appleNum) }
+            .then { narrayOf(mikan, mikanNum) }
+            .then { narrayOf(it[0], it[1]) }
+            .then { narrayOf(it[2], tax) }
             .done()
 
     val backwardResult = callGraph
             .backward { 1.0 }
-            .then { it[0].first }
-            .then { it[1].second }
-            .then { it[1].first }
+            .then { it[0][0] }
+            .then { it[1][1] }
+            .then { it[1][0] }
             .done()
 
     println(result)
