@@ -19,8 +19,7 @@ package io.github.noriyuki106.call_graph.layer
 import io.github.noriyuki106.numkt.NumericArray
 
 class AddLayer : CallGraphLayer() {
-    override fun forward(x: NumericArray): Double {
-        this.x = x
+    override fun calcForwardResult(x: NumericArray): Double {
         return this.x.sum()
     }
 

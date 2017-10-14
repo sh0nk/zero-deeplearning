@@ -20,7 +20,15 @@ import io.github.noriyuki106.numkt.NumericArray
 
 abstract class CallGraphLayer {
     protected lateinit var x: NumericArray
+        private set
 
-    abstract fun forward(x: NumericArray): Double
+    protected abstract fun calcForwardResult(x: NumericArray): Double
+
+    fun forward(x: NumericArray): Double {
+        this.x = x
+
+        return this.calcForwardResult(x)
+    }
+
     abstract fun backward(dout: Double): NumericArray
 }
