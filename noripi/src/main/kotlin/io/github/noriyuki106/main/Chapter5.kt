@@ -16,103 +16,65 @@
  */
 package io.github.noriyuki106.main
 
+import io.github.noriyuki106.call_graph.CallGraph
+import io.github.noriyuki106.call_graph.layer.AddLayer
+import io.github.noriyuki106.call_graph.layer.MultiplyLayer
+
 fun main(args: Array<String>) {
-    sample5_2()
+    sample5_4_1()
+    sample5_4_2()
 }
 
-private fun sample5_2() {
-    val apple = 100
-    val appleNum = 2
+private fun sample5_4_1() {
+    val apple = 100.0
+    val appleNum = 2.0
     val tax = 1.1
 
     val callGraph = CallGraph(MultiplyLayer(), MultiplyLayer())
 
-    val result = callGraph.forward {
-        apple.toDouble() to appleNum.toDouble()
-    }.then { results ->
-        results[0] to tax
-    }.done()
+    val result = callGraph
+            .forward { apple to appleNum }
+            .then { it[0] to tax }
+            .done()
 
-    val backwardResults = callGraph.backward {
-        1.toDouble()
-    }.then { results ->
-        results[0].first
-    }.done()
+    val backwardResults = callGraph
+            .backward { 1.0 }
+            .then { it[0].first }
+            .done()
 
     println(result)
     println(backwardResults)
 }
 
-abstract class CallGraphLayer {
-    protected lateinit var x: Number
-    protected lateinit var y: Number
+private fun sample5_4_2() {
+    val apple = 100.0
+    val appleNum = 2.0
+    val mikan = 150.0
+    val mikanNum = 3.0
+    val tax = 1.1
 
-    abstract fun forward(x: Double, y: Double): Double
-    abstract fun backward(dout: Double): Pair<Double, Double>
+    val callGraph = CallGraph(
+            MultiplyLayer(), // calc apple subtotal
+            MultiplyLayer(), // calc mikan subtotal
+            AddLayer(), // calc subtotal (excl. tax)
+            MultiplyLayer()
+    )
 
-    operator fun invoke(x: Double, y: Double): Double = this.forward(x, y)
+    val result = callGraph
+            .forward { apple to appleNum }
+            .then { mikan to mikanNum }
+            .then { it[0] to it[1] }
+            .then { it[2] to tax }
+            .done()
+
+    val backwardResult = callGraph
+            .backward { 1.0 }
+            .then { it[0].first }
+            .then { it[1].second }
+            .then { it[1].first }
+            .done()
+
+    println(result)
+    println(backwardResult)
 }
 
-class MultiplyLayer : CallGraphLayer() {
-    override fun forward(x: Double, y: Double): Double {
-        this.x = x
-        this.y = y
-
-        return this.x.toDouble() * this.y.toDouble()
-    }
-
-    override fun backward(dout: Double): Pair<Double, Double> {
-        val dx = dout * this.y.toDouble()
-        val dy = dout * this.x.toDouble()
-
-        return dx to dy
-    }
-
-}
-
-class CallGraph(private vararg val callGraphLayer: CallGraphLayer) {
-    fun forward(getArgument: () -> Pair<Double, Double>): ForwardCallGraphInvocation {
-        return ForwardCallGraphInvocation(
-                results = listOf(),
-                callGraphLayers = this.callGraphLayer.toList()
-        ).then { _ -> getArgument() }
-    }
-
-    fun backward(getArgument: () -> Double): BackwardCallGraphInvocation {
-        return BackwardCallGraphInvocation(
-                results = listOf(),
-                callGraphLayers = this.callGraphLayer.toList()
-        ).then { _ -> getArgument() }
-    }
-}
-
-class ForwardCallGraphInvocation(private val results: List<Double>,
-                                 private val callGraphLayers: List<CallGraphLayer>) {
-
-    fun then(getArgument: (List<Double>) -> Pair<Double, Double>): ForwardCallGraphInvocation {
-        val arguments = getArgument(this.results)
-
-        return ForwardCallGraphInvocation(
-                this.results + listOf(this.callGraphLayers.first()
-                        .forward(arguments.first, arguments.second)),
-                this.callGraphLayers.drop(1)
-        )
-    }
-
-    fun done(): Double = this.results.last()
-}
-
-class BackwardCallGraphInvocation(private val results: List<Pair<Double, Double>>,
-                                  private val callGraphLayers: List<CallGraphLayer>) {
-
-    fun then(getArgument: (List<Pair<Double, Double>>) -> Double): BackwardCallGraphInvocation {
-        val argument = getArgument(this.results)
-
-        return BackwardCallGraphInvocation(
-                this.results + listOf(this.callGraphLayers.last().backward(argument)),
-                this.callGraphLayers.dropLast(1)
-        )
-    }
-
-    fun done() = this.results
-}
