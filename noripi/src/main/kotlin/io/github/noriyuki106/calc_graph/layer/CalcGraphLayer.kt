@@ -14,11 +14,11 @@
  *
  * @author Noriyuki Ishida
  */
-package io.github.noriyuki106.call_graph.layer
+package io.github.noriyuki106.calc_graph.layer
 
 import io.github.noriyuki106.numkt.NumericArray
 
-abstract class CallGraphLayer {
+abstract class CalcGraphLayer {
     protected lateinit var x: NumericArray
         private set
 

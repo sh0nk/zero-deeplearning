@@ -16,9 +16,9 @@
  */
 package io.github.noriyuki106.main
 
-import io.github.noriyuki106.call_graph.CallGraph
-import io.github.noriyuki106.call_graph.layer.AddLayer
-import io.github.noriyuki106.call_graph.layer.MultiplyLayer
+import io.github.noriyuki106.calc_graph.CalcGraph
+import io.github.noriyuki106.calc_graph.layer.AddLayer
+import io.github.noriyuki106.calc_graph.layer.MultiplyLayer
 import io.github.noriyuki106.numkt.narrayOf
 
 fun main(args: Array<String>) {
@@ -31,14 +31,14 @@ private fun sample5_4_1() {
     val appleNum = 2.0
     val tax = 1.1
 
-    val callGraph = CallGraph(MultiplyLayer(), MultiplyLayer())
+    val calcGraph = CalcGraph(MultiplyLayer(), MultiplyLayer())
 
-    val result = callGraph
+    val result = calcGraph
             .forward { narrayOf(apple, appleNum) }
             .then { narrayOf(it[0], tax) }
             .done()
 
-    val backwardResults = callGraph
+    val backwardResults = calcGraph
             .backward { 1.0 }
             .then { it[0][0] }
             .done()
@@ -54,21 +54,21 @@ private fun sample5_4_2() {
     val mikanNum = 3.0
     val tax = 1.1
 
-    val callGraph = CallGraph(
+    val calcGraph = CalcGraph(
             MultiplyLayer(), // calc apple subtotal
             MultiplyLayer(), // calc mikan subtotal
             AddLayer(), // calc subtotal (excl. tax)
             MultiplyLayer()
     )
 
-    val result = callGraph
+    val result = calcGraph
             .forward { narrayOf(apple, appleNum) }
             .then { narrayOf(mikan, mikanNum) }
             .then { narrayOf(it[0], it[1]) }
             .then { narrayOf(it[2], tax) }
             .done()
 
-    val backwardResult = callGraph
+    val backwardResult = calcGraph
             .backward { 1.0 }
             .then { it[0][0] }
             .then { it[1][1] }

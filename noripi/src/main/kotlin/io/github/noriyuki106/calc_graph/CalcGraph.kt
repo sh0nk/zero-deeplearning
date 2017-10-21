@@ -14,37 +14,37 @@
  *
  * @author Noriyuki Ishida
  */
-package io.github.noriyuki106.call_graph
+package io.github.noriyuki106.calc_graph
 
-import io.github.noriyuki106.call_graph.layer.CallGraphLayer
+import io.github.noriyuki106.calc_graph.layer.CalcGraphLayer
 import io.github.noriyuki106.numkt.NumericArray
 
-class CallGraph(private vararg val callGraphLayer: CallGraphLayer) {
+class CalcGraph(private vararg val calcGraphLayer: CalcGraphLayer) {
     fun forward(getArgument: () -> NumericArray): ForwardCallGraphInvocation {
         return ForwardCallGraphInvocation(
                 results = listOf(),
-                callGraphLayers = this.callGraphLayer.toList()
+                calcGraphLayers = this.calcGraphLayer.toList()
         ).then { _ -> getArgument() }
     }
 
     fun backward(getArgument: () -> Double): BackwardCallGraphInvocation {
         return BackwardCallGraphInvocation(
                 results = listOf(),
-                callGraphLayers = this.callGraphLayer.toList()
+                calcGraphLayers = this.calcGraphLayer.toList()
         ).then { _ -> getArgument() }
     }
 }
 
 class ForwardCallGraphInvocation(private val results: List<Double>,
-                                 private val callGraphLayers: List<CallGraphLayer>) {
+                                 private val calcGraphLayers: List<CalcGraphLayer>) {
 
     fun then(getArgument: (List<Double>) -> NumericArray): ForwardCallGraphInvocation {
         val arguments = getArgument(this.results)
 
         return ForwardCallGraphInvocation(
-                this.results + listOf(this.callGraphLayers.first()
+                this.results + listOf(this.calcGraphLayers.first()
                         .forward(arguments)),
-                this.callGraphLayers.drop(1)
+                this.calcGraphLayers.drop(1)
         )
     }
 
@@ -52,14 +52,14 @@ class ForwardCallGraphInvocation(private val results: List<Double>,
 }
 
 class BackwardCallGraphInvocation(private val results: List<NumericArray>,
-                                  private val callGraphLayers: List<CallGraphLayer>) {
+                                  private val calcGraphLayers: List<CalcGraphLayer>) {
 
     fun then(getArgument: (List<NumericArray>) -> Double): BackwardCallGraphInvocation {
         val argument = getArgument(this.results)
 
         return BackwardCallGraphInvocation(
-                this.results + listOf(this.callGraphLayers.last().backward(argument)),
-                this.callGraphLayers.dropLast(1)
+                this.results + listOf(this.calcGraphLayers.last().backward(argument)),
+                this.calcGraphLayers.dropLast(1)
         )
     }
 

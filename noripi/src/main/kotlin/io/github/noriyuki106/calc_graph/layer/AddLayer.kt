@@ -14,18 +14,17 @@
  *
  * @author Noriyuki Ishida
  */
-package io.github.noriyuki106.call_graph.layer
+package io.github.noriyuki106.calc_graph.layer
 
 import io.github.noriyuki106.numkt.NumericArray
 
-class MultiplyLayer : CallGraphLayer() {
+class AddLayer : CalcGraphLayer() {
     override fun calcForwardResult(x: NumericArray): Double {
-        return this.x.product()
+        return this.x.sum()
     }
 
     override fun backward(dout: Double): NumericArray {
-        val sum = this.x.sum()
-        return this.x.map { (sum - it) * dout }
+        return this.x.map { dout }
     }
 
 }
