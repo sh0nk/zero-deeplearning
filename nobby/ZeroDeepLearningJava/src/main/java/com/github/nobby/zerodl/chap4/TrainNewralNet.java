@@ -35,8 +35,8 @@ public class TrainNewralNet {
             for (int i = 0; i < itersNum; i++) {
                 logger.info("iters count: {}", i);
                 BatchMnistData batchMnistData = mnistData.getTrainData4Batch(batchSize);
-                twoLayerNet.numericalGradient(batchMnistData.getBatchData(), batchMnistData.getBatchLabel(), learningRate);
-                double loss = twoLayerNet.loss(batchMnistData.getBatchData(), batchMnistData.getBatchLabel());
+                twoLayerNet.numericalGradient(batchMnistData.getBatchData(), batchMnistData.getBatchLabels(), learningRate);
+                double loss = twoLayerNet.loss(batchMnistData.getBatchData(), batchMnistData.getBatchLabels());
                 trainLossList.add(loss);
                 logger.info("  loss value: {}", loss);
 

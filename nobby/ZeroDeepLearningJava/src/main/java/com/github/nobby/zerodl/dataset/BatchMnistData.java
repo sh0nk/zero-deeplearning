@@ -1,5 +1,6 @@
 package com.github.nobby.zerodl.dataset;
 
+import lombok.Data;
 import org.jblas.DoubleMatrix;
 
 import java.util.ArrayList;
@@ -7,20 +8,13 @@ import java.util.ArrayList;
 /**
  * Created by onishinobuhiro on 2017/10/01.
  */
+@Data
 public class BatchMnistData {
     DoubleMatrix batchData;
-    ArrayList<Label> batchLabels;
+    DoubleMatrix batchLabels;
 
-    BatchMnistData(DoubleMatrix batchData, ArrayList<Label> batchLabel) {
+    BatchMnistData(DoubleMatrix batchData, DoubleMatrix batchLabels) {
         this.batchData = batchData;
-        this.batchLabels = batchLabel;
-    }
-
-    public DoubleMatrix getBatchData() {
-        return this.batchData;
-    }
-
-    public ArrayList<Label> getBatchLabel() {
-        return this.batchLabels;
+        this.batchLabels = batchLabels;
     }
 }

@@ -46,6 +46,8 @@ public class TwoLayerNet {
      */
     private DoubleMatrix predict(DoubleMatrix x) {
         DoubleMatrix a1 = x.mmul(W1);
+        // test
+        a1.addRowVector(B1);
         // add b1 matrix
         for (int i = 0; i < a1.rows; i++) {
             for (int j = 0; j < a1.columns; j++) {
@@ -64,24 +66,27 @@ public class TwoLayerNet {
         return Functions.softmax(a2);
     }
 
-    public double loss(DoubleMatrix x, ArrayList<Label> t) {
+    public double loss(DoubleMatrix x, DoubleMatrix t) {
         DoubleMatrix y = predict(x);
         return Functions.crossEntropyError(x, t);
     }
 
-    public float accuracy(DoubleMatrix x, ArrayList<Label> t) {
+    public float accuracy(DoubleMatrix x, DoubleMatrix t) {
         int correctCount = 0;
         DoubleMatrix y = predict(x);
         for (int i = 0; i < y.rows; i++) {
             int predictValue = y.getRow(i).argmax();
+            //TODO 直す
+            /*
             if (predictValue == t.get(i).getLabelValue()) {
                 correctCount++;
             }
+            */
         }
         return correctCount / y.rows;
     }
 
-    public void numericalGradient(DoubleMatrix x, ArrayList<Label> t, double learningRatio) {
+    public void numericalGradient(DoubleMatrix x, DoubleMatrix t, double learningRatio) {
         logger.info("calculate gradient W1...");
         DoubleMatrix gradW1 = numericalGradientW1(x, t);
         logger.info("calculate gradient B1...");
@@ -97,7 +102,7 @@ public class TwoLayerNet {
         B2 = B2.sub(gradB2.mul(learningRatio));
     }
 
-    private DoubleMatrix numericalGradientW1(DoubleMatrix x, ArrayList<Label> t) {
+    private DoubleMatrix numericalGradientW1(DoubleMatrix x, DoubleMatrix t) {
         DoubleMatrix gradW1 = DoubleMatrix.zeros(W1.rows, W1.columns);
         for (int i = 0; i < W1.rows; i++) {
             for (int j = 0; j < W1.columns; j++) {
@@ -114,7 +119,7 @@ public class TwoLayerNet {
         return gradW1;
     }
 
-    private DoubleMatrix numericalGradientW2(DoubleMatrix x, ArrayList<Label> t) {
+    private DoubleMatrix numericalGradientW2(DoubleMatrix x, DoubleMatrix t) {
         DoubleMatrix gradW2 = DoubleMatrix.zeros(W2.rows, W2.columns);
         for (int i = 0; i < W2.rows; i++) {
             for (int j = 0; j < W2.columns; j++) {
@@ -131,7 +136,7 @@ public class TwoLayerNet {
         return gradW2;
     }
 
-    private DoubleMatrix numericalGradientB1(DoubleMatrix x, ArrayList<Label> t) {
+    private DoubleMatrix numericalGradientB1(DoubleMatrix x, DoubleMatrix t) {
         DoubleMatrix gradB1 = DoubleMatrix.zeros(B1.rows, B1.columns);
         for (int i = 0; i < B1.rows; i++) {
             for (int j = 0; j < B1.columns; j++) {
@@ -148,7 +153,7 @@ public class TwoLayerNet {
         return gradB1;
     }
 
-    private DoubleMatrix numericalGradientB2(DoubleMatrix x, ArrayList<Label> t) {
+    private DoubleMatrix numericalGradientB2(DoubleMatrix x, DoubleMatrix t) {
         DoubleMatrix gradB2 = DoubleMatrix.zeros(B2.rows, B2.columns);
         for (int i = 0; i < B2.rows; i++) {
             for (int j = 0; j < B2.columns; j++) {

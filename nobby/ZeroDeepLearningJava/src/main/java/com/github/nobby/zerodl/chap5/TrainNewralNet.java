@@ -23,14 +23,14 @@ public class TrainNewralNet {
         List testAccList = new ArrayList();
 
         double[][] hoge = {
-                {1,1,1,1,1},
-                {2,2,2,2,2},
-                {3,3,3,3,3}
+                {1,1,7,1,-1},
+                {2,-1,2,-2,2},
+                {3,10,3,3,-3}
         };
 
         DoubleMatrix test = new DoubleMatrix(hoge);
-        test.rowSums().print();
-
+        DoubleMatrix mask = test.le(0);
+        mask.print();
         return;
 /*
         MnistHandler mnistHandler = new MnistHandler();

@@ -64,19 +64,22 @@ public class TwoLayerNet {
         return Functions.softmax(a2);
     }
 
-    public double loss(DoubleMatrix x, ArrayList<Label> t) {
+    public double loss(DoubleMatrix x, DoubleMatrix t) {
         DoubleMatrix y = predict(x);
         return Functions.crossEntropyError(x, t);
     }
 
-    public float accuracy(DoubleMatrix x, ArrayList<Label> t) {
+    public float accuracy(DoubleMatrix x, DoubleMatrix t) {
         int correctCount = 0;
         DoubleMatrix y = predict(x);
         for (int i = 0; i < y.rows; i++) {
             int predictValue = y.getRow(i).argmax();
+            //TODO 直す
+            /*
             if (predictValue == t.get(i).getLabelValue()) {
                 correctCount++;
             }
+            */
         }
         return correctCount / y.rows;
     }

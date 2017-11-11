@@ -52,13 +52,24 @@ public class Functions {
      * @param y neural network output
      * @param t train labels
      */
-    public static double crossEntropyError(DoubleMatrix y, ArrayList<Label> t) {
+    public static double crossEntropyError(DoubleMatrix y, DoubleMatrix t) {
         double error_sum = 0;
         for (int i = 0; i < y.rows; i++) {
-            double y_value = y.getRow(i).get(t.get(i).getLabelValue());
+            double y_value = y.getRow(i).get(getLabelValue(t, i));
             double error = Math.log(y_value + EPSILON);
             error_sum += error;
         }
         return -1 * error_sum / y.rows;
+    }
+
+    /**
+     * get the label value from 'one-hot-label' format label data
+     * @param t labelData Matrix
+     * @param targetRow get the label value of this row number
+     * @return
+     */
+    public static int getLabelValue(DoubleMatrix t, int targetRow) {
+        DoubleMatrix label = t.getRow(targetRow);
+        return label.argmax();
     }
 }

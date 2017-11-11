@@ -36,10 +36,10 @@ public class MnistHandler {
         download(TEST_LABEL_FILE);
 
         double[][] trainData = getFeatures(TRAIN_IMAGE_FILE, normalize);
-        ArrayList<Label> trainLabelList = getLabels(TRAIN_LABEL_FILE);
+        double[][] trainLabelList = getLabels(TRAIN_LABEL_FILE);
 
         double[][] testData = getFeatures(TEST_IMAGE_FILE, normalize);
-        ArrayList<Label> testLabelList = getLabels(TEST_LABEL_FILE);
+        double[][] testLabelList = getLabels(TEST_LABEL_FILE);
 
         MnistData mnistData = new MnistData(trainData, trainLabelList, testData, testLabelList);
         logger.info("----- load MNIST data end.");
@@ -91,6 +91,25 @@ public class MnistHandler {
         return features;
     }
 
+    private double[][] getLabels(String fileName) throws IOException {
+        //ArrayList<Label> labelList = new ArrayList<>();
+        DataInputStream is = new DataInputStream(new GZIPInputStream((new FileInputStream(BASE_PATH + fileName))));
+        is.readInt();
+        int numLabels = is.readInt();
+        int numDimensions = 10;
+
+        double[][] labels = new double[numLabels][numDimensions];
+        for (int i = 0; i < numLabels; i++) {
+            int labelValue = is.readUnsignedByte();
+            for (int j = 0; j < numDimensions; j++) {
+                labels[i][j] = (j == labelValue) ? 1 : 0;
+            }
+        }
+        return labels;
+    }
+
+    //TODO 消す
+    /*
     private ArrayList<Label> getLabels(String fileName) throws IOException {
         ArrayList<Label> labelList = new ArrayList<>();
         DataInputStream is = new DataInputStream(new GZIPInputStream((new FileInputStream(BASE_PATH + fileName))));
@@ -108,6 +127,7 @@ public class MnistHandler {
         }
         return labelList;
     }
+    */
 
 
     private void download(String fileName) throws IOException {
