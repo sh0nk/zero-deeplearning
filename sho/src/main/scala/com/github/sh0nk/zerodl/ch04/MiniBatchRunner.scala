@@ -2,7 +2,7 @@ package com.github.sh0nk.zerodl.ch04
 
 import breeze.linalg.{DenseMatrix, DenseVector}
 import breeze.stats.distributions.Rand
-import com.github.sh0nk.matplotlib4j.PlotImpl
+import com.github.sh0nk.matplotlib4j.Plot
 import com.github.sh0nk.zerodl.ch03.{Downloader, MNISTLoader}
 
 import scala.reflect.ClassTag
@@ -78,7 +78,7 @@ class MiniBatchRunner(loader: MNISTLoader) {
   def drawAccuracy(): Unit = {
     import collection.JavaConverters._
 
-    val plt = new PlotImpl()
+    val plt = Plot.create()
     plt.title("SVG (Numeric) Accuracy")
     plt.plot().add(accTrain.indices.map(Int.box).toList.asJava, accTrain.map(Double.box).toList.asJava).linestyle("--")
     plt.plot().add(accTest.indices.map(Int.box).toList.asJava, accTest.map(Double.box).toList.asJava).linestyle("==")

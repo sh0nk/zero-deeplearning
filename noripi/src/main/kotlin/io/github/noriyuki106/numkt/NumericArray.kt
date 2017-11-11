@@ -79,6 +79,8 @@ class NumericArray(private val values: DoubleArray) {
     fun sum(): Double = this.values.sum()
     fun sumBy(transformer: (Double) -> Double): Double = this.values.sumByDouble { transformer(it) }
 
+    fun product(): Double = this.values.fold(1.0) { acc, p -> acc * p }
+
     fun max(): Double = this.values.max() ?: 0.0
 
     fun removed(i: Int): NumericArray = narrayOf(*this.values.copyOfRange(0, i),
