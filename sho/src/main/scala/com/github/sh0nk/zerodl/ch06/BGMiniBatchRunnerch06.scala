@@ -11,16 +11,10 @@ import com.github.sh0nk.zerodl.ch06._
 import scala.collection.mutable.ArrayBuffer
 
 class BGMiniBatchRunnerch06(loader: MNISTLoader) {
-  val hiddenLayer = 50
-  val outputLayer = 10
-
   val batchSize = 100
-  val iterNum = 10000
-  val learningRate = 0.1
 
   var trainX, testX: DenseMatrix[Double] = _
   var trainY, testY: DenseMatrix[Int] = _
-
 
   private def loadData() = {
     Logger.info("start file loading")
@@ -39,37 +33,6 @@ class BGMiniBatchRunnerch06(loader: MNISTLoader) {
     Logger.info(s"Test (${testX.rows}, ${testX.cols}) (${testY.rows}, ${testY.cols})")
   }
 
-  def run(): Unit = {
-    loadData()
-    val optimizer: Optimizer = AdaGrad()
-    val network = new BackpropagationGradientNNch06(trainX.cols, hiddenLayer, outputLayer)
-    var dispLosses: Seq[Double] = Seq()
-
-    Range(0, iterNum).foreach { v =>
-      Logger.info(s"batch attempt ${v}")
-      dispLosses :+= batch(network, optimizer)
-      if (v % 2000 == 0) {
-        drawLoss(Seq(dispLosses))
-      }
-    }
-  }
-
-  def runMulti(): Unit = {
-    loadData()
-    val networksAndOptimizersAndLosses = Seq(SGD(0.1), Momentum(), AdaGrad()).map { v =>
-      (new BackpropagationGradientNNch06(trainX.cols, hiddenLayer, outputLayer), v, ArrayBuffer[Double]())
-    }
-
-    Range(0, iterNum).foreach { v =>
-      Logger.info(s"batch attempt ${v}")
-      networksAndOptimizersAndLosses.foreach(nol => nol._3 += batch(nol._1, nol._2))
-
-      if (v % 2000 == 0) {
-        drawLoss(networksAndOptimizersAndLosses.map(_._3))
-      }
-    }
-  }
-
   def drawLoss(dispLossesMulti: Seq[Seq[Double]]) {
     import scala.collection.JavaConverters._
 
@@ -83,8 +46,7 @@ class BGMiniBatchRunnerch06(loader: MNISTLoader) {
     plt.show()
   }
 
-
-  def batch(network: BackpropagationGradientNNch06, optimizer: Optimizer): Double = {
+  def batch(network: BackpropagationGradientNNch06, optimizer: Optimizer = SGD(0.01)): Double = {
     var batchX = DenseMatrix.zeros[Double](batchSize, trainX.cols)
     Logger.debug(s"batchX ${batchX.rows}, ${batchX.cols}")
     var batchY = DenseMatrix.zeros[Int](batchSize, trainY.cols)
@@ -104,8 +66,7 @@ class BGMiniBatchRunnerch06(loader: MNISTLoader) {
     loss
   }
 
-
-  def gradientDescent(network: BackpropagationGradientNNch06,
+  private def gradientDescent(network: BackpropagationGradientNNch06,
                       batchX: DenseMatrix[Double], batchY: DenseMatrix[Int], optimizer: Optimizer): Unit = {
     network.gradient(batchX, batchY)
 
@@ -116,13 +77,16 @@ class BGMiniBatchRunnerch06(loader: MNISTLoader) {
 }
 
 object BGMiniBatchRunnerch06 {
+  val hiddenLayer = 50
+  val outputLayer = 10
+  val iterNum = 10000
 
   def testGradientNumericalGradientDiff(): Unit = {
     val runner = new BGMiniBatchRunnerch06(new MNISTLoader())
     runner.loadData()
 
-    val network = new BackpropagationGradientNNch06(runner.trainX.cols, runner.hiddenLayer, runner.outputLayer)
-    val refNetwork = new NumericalGradientNN(runner.trainX.cols, runner.hiddenLayer, runner.outputLayer)
+    val network = new BackpropagationGradientNNch06(runner.trainX.cols, Seq(hiddenLayer), outputLayer)
+    val refNetwork = new NumericalGradientNN(runner.trainX.cols, hiddenLayer, outputLayer)
 
     val idx = 0 to 2
     network.gradient(runner.trainX(idx, ::), runner.trainY(idx, ::))
@@ -134,14 +98,73 @@ object BGMiniBatchRunnerch06 {
     //    Logger.info(bgGrad.W1)
     //    Logger.info(numGrad.W1)
 
-    Logger.info(s"W1 ${sum(abs(bgGradW1 - numGrad.W1)) / runner.trainX.cols / runner.hiddenLayer}")
+    Logger.info(s"W1 ${sum(abs(bgGradW1 - numGrad.W1)) / runner.trainX.cols / hiddenLayer}")
   }
+
+
+  def testOneOptimizer(): Unit = {
+    val runner = new BGMiniBatchRunnerch06(new MNISTLoader())
+
+    runner.loadData()
+    val optimizer: Optimizer = AdaGrad()
+    val network = new BackpropagationGradientNNch06(runner.trainX.cols, Seq(hiddenLayer), outputLayer)
+    var dispLosses: Seq[Double] = Seq()
+
+    Range(0, iterNum).foreach { v =>
+      Logger.info(s"batch attempt ${v}")
+      dispLosses :+= runner.batch(network, optimizer)
+      if (v % 2000 == 0) {
+        runner.drawLoss(Seq(dispLosses))
+      }
+    }
+  }
+
+  def testOptimizersComparison(): Unit = {
+    val runner = new BGMiniBatchRunnerch06(new MNISTLoader())
+
+    runner.loadData()
+    val networksAndOptimizersAndLosses = Seq(SGD(0.1), Momentum(), AdaGrad()).map { v =>
+      (new BackpropagationGradientNNch06(runner.trainX.cols, Seq(hiddenLayer), outputLayer), v, ArrayBuffer[Double]())
+    }
+
+    Range(0, iterNum).foreach { v =>
+      Logger.info(s"batch attempt ${v}")
+      networksAndOptimizersAndLosses.foreach(nol => nol._3 += runner.batch(nol._1, nol._2))
+
+      if (v % 2000 == 0) {
+        runner.drawLoss(networksAndOptimizersAndLosses.map(_._3))
+      }
+    }
+  }
+
+  def testWeightInitDeboost(): Unit = {
+    val runner = new BGMiniBatchRunnerch06(new MNISTLoader())
+
+    runner.loadData()
+    val networksAndLosses = Seq(
+      (new BackpropagationGradientNNch06(runner.trainX.cols, Seq(100, 100, 100), outputLayer,
+        weightInitDeboost = "0.01"), ArrayBuffer[Double]()),
+      (new BackpropagationGradientNNch06(runner.trainX.cols, Seq(100, 100, 100), outputLayer,
+        weightInitDeboost = "xavier"), ArrayBuffer[Double]()),
+      (new BackpropagationGradientNNch06(runner.trainX.cols, Seq(100, 100, 100), outputLayer,
+        weightInitDeboost = "he"), ArrayBuffer[Double]())
+    )
+
+    Range(0, iterNum).foreach { v =>
+      Logger.info(s"batch attempt ${v}")
+      networksAndLosses.foreach(nl => nl._2 += runner.batch(nl._1))
+
+      if (v % 2000 == 0) {
+        runner.drawLoss(networksAndLosses.map(_._2))
+      }
+    }
+  }
+
 
   def main(args: Array[String]) = {
 //    testGradientNumericalGradientDiff()
 
-    val runner = new BGMiniBatchRunnerch06(new MNISTLoader())
-//    runner.run()
-    runner.runMulti()
+//    testOptimizersComparison()
+    testWeightInitDeboost()
   }
 }
