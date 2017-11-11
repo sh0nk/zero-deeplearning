@@ -1,4 +1,4 @@
-package com.github.nobby.zerodl.com.github.nobby.zerodl.dataset;
+package com.github.nobby.zerodl.dataset;
 
 import org.jblas.DoubleMatrix;
 
@@ -15,15 +15,13 @@ public class Label {
         this.label = label;
     }
 
-    public void setLabelIndex(int labelValue) {
+    public void setLabelValue(int labelValue) {
         this.labelValue = labelValue;
     }
-
     public int getLabelValue() {return  this.labelValue;}
 
     public void setLabel(DoubleMatrix label) {
         this.label = label;
     }
-
     public DoubleMatrix getLabel() {return  this.label;}
 }

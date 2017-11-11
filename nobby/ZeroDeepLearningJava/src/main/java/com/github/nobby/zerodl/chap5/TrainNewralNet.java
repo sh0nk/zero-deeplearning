@@ -1,8 +1,9 @@
-package com.github.nobby.zerodl.com.github.nobby.zerodl.chap4;
+package com.github.nobby.zerodl.chap5;
 
-import com.github.nobby.zerodl.com.github.nobby.zerodl.dataset.BatchMnistData;
-import com.github.nobby.zerodl.com.github.nobby.zerodl.dataset.MnistData;
-import com.github.nobby.zerodl.com.github.nobby.zerodl.dataset.MnistHandler;
+import com.github.nobby.zerodl.dataset.BatchMnistData;
+import com.github.nobby.zerodl.dataset.MnistData;
+import com.github.nobby.zerodl.dataset.MnistHandler;
+import org.jblas.DoubleMatrix;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,10 +18,21 @@ public class TrainNewralNet {
     private static final Logger logger = LoggerFactory.getLogger(MnistHandler.class);
     
     public static void main(String[] args) {
-        List trainLossList = new ArrayList<>();
-        List trainAccList = new ArrayList<>();
-        List testAccList = new ArrayList<>();
+        List trainLossList = new ArrayList();
+        List trainAccList = new ArrayList();
+        List testAccList = new ArrayList();
 
+        double[][] hoge = {
+                {1,1,1,1,1},
+                {2,2,2,2,2},
+                {3,3,3,3,3}
+        };
+
+        DoubleMatrix test = new DoubleMatrix(hoge);
+        test.rowSums().print();
+
+        return;
+/*
         MnistHandler mnistHandler = new MnistHandler();
         try {
             MnistData mnistData = mnistHandler.loadMnist(true);
@@ -35,7 +47,7 @@ public class TrainNewralNet {
             for (int i = 0; i < itersNum; i++) {
                 logger.info("iters count: {}", i);
                 BatchMnistData batchMnistData = mnistData.getTrainData4Batch(batchSize);
-                twoLayerNet.numericalGradient(batchMnistData.getBatchData(), batchMnistData.getBatchLabel(), learningRate);
+                //twoLayerNet.numericalGradient(batchMnistData.getBatchData(), batchMnistData.getBatchLabel(), learningRate);
                 double loss = twoLayerNet.loss(batchMnistData.getBatchData(), batchMnistData.getBatchLabel());
                 trainLossList.add(loss);
                 logger.info("  loss value: {}", loss);
@@ -51,5 +63,6 @@ public class TrainNewralNet {
         } catch (IOException e) {
             logger.error("load MNIST DATA failed.", e);
         }
+        */
     }
 }

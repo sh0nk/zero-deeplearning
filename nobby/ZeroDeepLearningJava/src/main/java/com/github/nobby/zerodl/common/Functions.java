@@ -1,6 +1,6 @@
-package com.github.nobby.zerodl.com.github.nobby.zerodl.common;
+package com.github.nobby.zerodl.common;
 
-import com.github.nobby.zerodl.com.github.nobby.zerodl.dataset.Label;
+import com.github.nobby.zerodl.dataset.Label;
 import org.jblas.DoubleMatrix;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +22,11 @@ public class Functions {
             }
         }
         return input;
+    }
+
+    public static DoubleMatrix sigmoidGrad(DoubleMatrix input) {
+        DoubleMatrix oneMatrix = DoubleMatrix.ones(input.rows, input.columns);
+        return oneMatrix.sub(sigmoid(input)).mmul(input);
     }
 
     public static DoubleMatrix softmax(DoubleMatrix input) {

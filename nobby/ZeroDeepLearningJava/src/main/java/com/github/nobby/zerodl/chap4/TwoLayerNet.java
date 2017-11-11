@@ -1,7 +1,7 @@
-package com.github.nobby.zerodl.com.github.nobby.zerodl.chap4;
+package com.github.nobby.zerodl.chap4;
 
-import com.github.nobby.zerodl.com.github.nobby.zerodl.common.Functions;
-import com.github.nobby.zerodl.com.github.nobby.zerodl.dataset.Label;
+import com.github.nobby.zerodl.common.Functions;
+import com.github.nobby.zerodl.dataset.Label;
 import org.jblas.DoubleMatrix;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -108,7 +108,7 @@ public class TwoLayerNet {
 
                 tmpW1.put(i, j, W1.get(i, j) - h);
                 double fd2 = twoLayerNet.loss(x, t);
-                gradW1.put(i, j, (fd1 - fd2 / 2 * h));
+                gradW1.put(i, j, ((fd1 - fd2) / 2 * h));
             }
         }
         return gradW1;
@@ -125,7 +125,7 @@ public class TwoLayerNet {
 
                 tmpW2.put(i, j, W2.get(i, j) - h);
                 double fd2 = twoLayerNet.loss(x, t);
-                gradW2.put(i, j, (fd1 - fd2 / 2 * h));
+                gradW2.put(i, j, ((fd1 - fd2) / 2 * h));
             }
         }
         return gradW2;
@@ -142,7 +142,7 @@ public class TwoLayerNet {
 
                 tmpB1.put(i, j, B1.get(i, j) - h);
                 double fd2 = twoLayerNet.loss(x, t);
-                gradB1.put(i, j, (fd1 - fd2 / 2 * h));
+                gradB1.put(i, j, ((fd1 - fd2) / 2 * h));
             }
         }
         return gradB1;
@@ -159,7 +159,7 @@ public class TwoLayerNet {
 
                 tmpB2.put(i, j, B2.get(i, j) - h);
                 double fd2 = twoLayerNet.loss(x, t);
-                gradB2.put(i, j, (fd1 - fd2 / 2 * h));
+                gradB2.put(i, j, ((fd1 - fd2) / 2 * h));
             }
         }
         return gradB2;

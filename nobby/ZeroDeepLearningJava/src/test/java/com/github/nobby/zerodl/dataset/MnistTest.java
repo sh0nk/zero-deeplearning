@@ -1,4 +1,4 @@
-package com.github.nobby.zerodl.com.github.nobby.zerodl.dataset;
+package com.github.nobby.zerodl.dataset;
 
 import org.junit.Test;
 
