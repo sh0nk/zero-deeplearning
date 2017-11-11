@@ -3,9 +3,12 @@ package com.github.sh0nk.zerodl.ch05
 import breeze.linalg.{*, DenseMatrix, argmax, sum}
 import breeze.numerics.abs
 import breeze.stats.distributions.Rand
+import com.github.sh0nk.matplotlib4j.Plot
 import com.github.sh0nk.zerodl.ch03.{Downloader, MNISTLoader}
 import com.github.sh0nk.zerodl.ch04.{Logger, MiniBatchRunner, NumericalGradientNN}
 import com.github.sh0nk.zerodl.ch06._
+
+import scala.collection.mutable.ArrayBuffer
 
 class BGMiniBatchRunnerch06(loader: MNISTLoader) {
   val hiddenLayer = 50
@@ -17,9 +20,7 @@ class BGMiniBatchRunnerch06(loader: MNISTLoader) {
 
   var trainX, testX: DenseMatrix[Double] = _
   var trainY, testY: DenseMatrix[Int] = _
-  var network: BackpropagationGradientNNch06 = _
-//  val optimizer: Optimizer = SGD(learningRate)
-  val optimizer: Optimizer = Momentum()
+
 
   private def loadData() = {
     Logger.info("start file loading")
@@ -40,15 +41,50 @@ class BGMiniBatchRunnerch06(loader: MNISTLoader) {
 
   def run(): Unit = {
     loadData()
-    network = new BackpropagationGradientNNch06(trainX.cols, hiddenLayer, outputLayer)
+    val optimizer: Optimizer = AdaGrad()
+    val network = new BackpropagationGradientNNch06(trainX.cols, hiddenLayer, outputLayer)
+    var dispLosses: Seq[Double] = Seq()
 
     Range(0, iterNum).foreach { v =>
       Logger.info(s"batch attempt ${v}")
-      batch()
+      dispLosses :+= batch(network, optimizer)
+      if (v % 2000 == 0) {
+        drawLoss(Seq(dispLosses))
+      }
     }
   }
 
-  def batch(): Unit = {
+  def runMulti(): Unit = {
+    loadData()
+    val networksAndOptimizersAndLosses = Seq(SGD(0.1), Momentum(), AdaGrad()).map { v =>
+      (new BackpropagationGradientNNch06(trainX.cols, hiddenLayer, outputLayer), v, ArrayBuffer[Double]())
+    }
+
+    Range(0, iterNum).foreach { v =>
+      Logger.info(s"batch attempt ${v}")
+      networksAndOptimizersAndLosses.foreach(nol => nol._3 += batch(nol._1, nol._2))
+
+      if (v % 2000 == 0) {
+        drawLoss(networksAndOptimizersAndLosses.map(_._3))
+      }
+    }
+  }
+
+  def drawLoss(dispLossesMulti: Seq[Seq[Double]]) {
+    import scala.collection.JavaConverters._
+
+    val plt = Plot.create()
+    plt.title("SGD Loss")
+    dispLossesMulti.foreach { dispLosses =>
+      plt.plot().add(dispLosses.indices.map(Int.box).toList.asJava, dispLosses.map(Double.box).toList.asJava)
+        .linestyle("-").label("Loss")
+    }
+    plt.legend().loc("upper right")
+    plt.show()
+  }
+
+
+  def batch(network: BackpropagationGradientNNch06, optimizer: Optimizer): Double = {
     var batchX = DenseMatrix.zeros[Double](batchSize, trainX.cols)
     Logger.debug(s"batchX ${batchX.rows}, ${batchX.cols}")
     var batchY = DenseMatrix.zeros[Int](batchSize, trainY.cols)
@@ -60,13 +96,17 @@ class BGMiniBatchRunnerch06(loader: MNISTLoader) {
       batchY(i, ::) := trainY(v, ::)
     }
 
-    gradientDescent(batchX, batchY)
+    gradientDescent(network, batchX, batchY, optimizer)
 
     val loss = network.loss(batchX, batchY)
     Logger.info(s"loss val: $loss")
+
+    loss
   }
 
-  def gradientDescent(batchX: DenseMatrix[Double], batchY: DenseMatrix[Int]): Unit = {
+
+  def gradientDescent(network: BackpropagationGradientNNch06,
+                      batchX: DenseMatrix[Double], batchY: DenseMatrix[Int], optimizer: Optimizer): Unit = {
     network.gradient(batchX, batchY)
 
     Logger.debug(s"d.W1 ${network.layers.head.asInstanceOf[WeightLayer].dW("w")}")
@@ -76,6 +116,7 @@ class BGMiniBatchRunnerch06(loader: MNISTLoader) {
 }
 
 object BGMiniBatchRunnerch06 {
+
   def testGradientNumericalGradientDiff(): Unit = {
     val runner = new BGMiniBatchRunnerch06(new MNISTLoader())
     runner.loadData()
@@ -88,8 +129,8 @@ object BGMiniBatchRunnerch06 {
     val bgGradW1 = network.layers.head.asInstanceOf[WeightLayer].dW("w")
     val yMat = runner.trainY(idx, ::)
     val numGrad = refNetwork.numericalGradient(runner.trainX(idx, ::), argmax(yMat(*, ::)))
-    Logger.info(yMat)
-    Logger.info(argmax(yMat(*, ::)))
+//    Logger.info(yMat)
+//    Logger.info(argmax(yMat(*, ::)))
     //    Logger.info(bgGrad.W1)
     //    Logger.info(numGrad.W1)
 
@@ -100,6 +141,7 @@ object BGMiniBatchRunnerch06 {
 //    testGradientNumericalGradientDiff()
 
     val runner = new BGMiniBatchRunnerch06(new MNISTLoader())
-    runner.run()
+//    runner.run()
+    runner.runMulti()
   }
 }

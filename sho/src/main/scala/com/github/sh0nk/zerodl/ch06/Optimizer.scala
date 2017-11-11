@@ -6,6 +6,9 @@ import com.github.sh0nk.zerodl.ch05.Layer
 
 /**
   * Expected only one per each layer, no multiple optimizer can be applied to a layer.
+  *
+  * Optimizer should not hold a weight or any status for a network. Instead, save these
+  * values onto the network itself.
   */
 trait Optimizer {
   final def optimize(layers: Seq[Layer]): Unit = {

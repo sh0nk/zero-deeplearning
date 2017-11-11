@@ -20,8 +20,7 @@ libraryDependencies  ++= Seq(
   "org.scalanlp" %% "breeze-viz" % "0.13.1",
 
   // https://github.com/sh0nk/matplotlib4j
-  // Need local build and deploy
-  "com.github.sh0nk.matplotlib4j" % "matplotlib4j" % "1.0.0-SNAPSHOT"
+  "com.github.sh0nk" % "matplotlib4j" % "0.3.0"
 
   //  "com.quantifind" %% "wisp" % "0.0.4"
 )
@@ -29,3 +28,5 @@ libraryDependencies  ++= Seq(
 
 resolvers += Resolver.mavenLocal
 resolvers += "Sonatype Releases" at "https://oss.sonatype.org/content/repositories/releases/"
+
+updateOptions := updateOptions.value.withLatestSnapshots(false)
