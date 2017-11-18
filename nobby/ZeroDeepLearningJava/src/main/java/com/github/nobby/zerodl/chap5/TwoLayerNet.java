@@ -1,19 +1,21 @@
 package com.github.nobby.zerodl.chap5;
 
-import com.github.nobby.zerodl.common.Functions;
-import com.github.nobby.zerodl.dataset.Label;
+import com.github.nobby.zerodl.common.layers.AffineLayer;
+import com.github.nobby.zerodl.common.layers.LayerInterface;
+import com.github.nobby.zerodl.common.layers.ReluLayer;
+import com.github.nobby.zerodl.common.layers.SoftmaxWithLossLayer;
+import lombok.Data;
 import org.jblas.DoubleMatrix;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Random;
+import java.util.*;
 
 /**
  * Created by onishinobuhiro on 2017/09/24.
  * Two Layer Neural Network
  */
+@Data
 public class TwoLayerNet {
     private static final Logger logger = LoggerFactory.getLogger(TwoLayerNet.class);
     private static final double h = 0.0001;
@@ -23,6 +25,9 @@ public class TwoLayerNet {
     private DoubleMatrix B1;
     private DoubleMatrix W2;
     private DoubleMatrix B2;
+
+    private List<LayerInterface> layerList;
+    private SoftmaxWithLossLayer lastLayer;
 
     TwoLayerNet(int input_size, int hidden_size, int output_size) {
         W1 = new DoubleMatrix(createWeightMatrix(input_size, hidden_size));
@@ -34,39 +39,37 @@ public class TwoLayerNet {
         double[] arrayB2 = new double[output_size];
         Arrays.fill(arrayB2, 0);
         B2 = new DoubleMatrix(arrayB2).transpose();
+
+        initLayers();
     }
 
     TwoLayerNet(DoubleMatrix w1, DoubleMatrix b1, DoubleMatrix w2, DoubleMatrix b2) {
         W1 = w1; W2 = w2;
         B1 = b1; B2 = b2;
+        initLayers();
+    }
+
+    private void initLayers() {
+        layerList = new ArrayList<LayerInterface>();
+        layerList.add(new AffineLayer(W1, B1));
+        layerList.add(new ReluLayer());
+        layerList.add(new AffineLayer(W2, B2));
+        lastLayer = new SoftmaxWithLossLayer();
     }
 
     /**
      * @param x : image data. 100 rows * 784 columns
      */
     private DoubleMatrix predict(DoubleMatrix x) {
-        DoubleMatrix a1 = x.mmul(W1);
-        // add b1 matrix
-        for (int i = 0; i < a1.rows; i++) {
-            for (int j = 0; j < a1.columns; j++) {
-                a1.put(i, j, a1.get(i, j) + B1.get(0, j));
-            }
+        for (LayerInterface layer : layerList) {
+            x = layer.forward(x);
         }
-        DoubleMatrix z1 = Functions.sigmoid(a1);
-
-        DoubleMatrix a2 = z1.mmul(W2);
-        // add b2 matrix
-        for (int i = 0; i < a2.rows; i++) {
-            for (int j = 0; j < a2.columns; j++) {
-                a2.put(i, j, a2.get(i, j) + B2.get(0, j));
-            }
-        }
-        return Functions.softmax(a2);
+        return x;
     }
 
     public double loss(DoubleMatrix x, DoubleMatrix t) {
         DoubleMatrix y = predict(x);
-        return Functions.crossEntropyError(x, t);
+        return lastLayer.forward(y, t);
     }
 
     public float accuracy(DoubleMatrix x, DoubleMatrix t) {
@@ -74,54 +77,34 @@ public class TwoLayerNet {
         DoubleMatrix y = predict(x);
         for (int i = 0; i < y.rows; i++) {
             int predictValue = y.getRow(i).argmax();
-            //TODO 直す
-            /*
-            if (predictValue == t.get(i).getLabelValue()) {
+            int labelValue = t.getRow(i).argmax();
+            if (predictValue == labelValue) {
                 correctCount++;
             }
-            */
         }
         return correctCount / y.rows;
     }
 
-    public Gradient gradient(DoubleMatrix x, ArrayList<Label> t) {
+    public Gradient gradient(DoubleMatrix x, DoubleMatrix t) {
         // forward
-        DoubleMatrix a1 = x.mmul(W1);
-        for (int i = 0; i < a1.rows; i++) {
-            for (int j = 0; j < a1.columns; j++) {
-                a1.put(i, j, a1.get(i, j) + B1.get(0, j));
-            }
-        }
-        DoubleMatrix z1 = Functions.sigmoid(a1);
-        DoubleMatrix a2 = z1.mmul(W2);
-        for (int i = 0; i < a2.rows; i++) {
-            for (int j = 0; j < a2.columns; j++) {
-                a2.put(i, j, a2.get(i, j) + B2.get(0, j));
-            }
-        }
-        DoubleMatrix y = Functions.softmax(a2);
+        loss(x, t);
 
         // backward
-        DoubleMatrix tMatrix = new DoubleMatrix(t.size(), t.get(0).getLabel().columns);
-        for (int i = 0; i < t.size(); i++) {
-            tMatrix = DoubleMatrix.concatVertically(tMatrix, t.get(i).getLabel());
+        DoubleMatrix dout = lastLayer.backward();
+        List<LayerInterface> reverseLayerList = new ArrayList<>(layerList);
+        Collections.reverse(reverseLayerList);
+        for (LayerInterface layer : reverseLayerList) {
+            dout = layer.backward(dout);
         }
-        DoubleMatrix dy = y.sub(tMatrix).div(x.rows);
 
         Gradient gradient = new Gradient();
-        gradient.setW2(z1.transpose().mmul(dy));
-        gradient.setB2(dy.rowSums());
+        AffineLayer affineLayer1 = (AffineLayer) layerList.get(0);
+        AffineLayer affineLayer2 = (AffineLayer) layerList.get(2);
 
-        DoubleMatrix da1 = dy.mmul(W2.transpose());
-        DoubleMatrix dz1 = Functions.sigmoidGrad(a1).mmul(da1);
-
-
-
-        //W1 = W1.sub(gradW1.mul(learningRatio));
-        //B1 = B1.sub(gradB1.mul(learningRatio));
-        //W2 = W2.sub(gradW2.mul(learningRatio));
-        //B2 = B2.sub(gradB2.mul(learningRatio));
-
+        gradient.setW1(affineLayer1.getDW());
+        gradient.setB1(affineLayer1.getDb());
+        gradient.setW2(affineLayer2.getDW());
+        gradient.setB2(affineLayer2.getDb());
 
         return gradient;
     }

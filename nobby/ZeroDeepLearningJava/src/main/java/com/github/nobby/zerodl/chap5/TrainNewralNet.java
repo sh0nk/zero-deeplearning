@@ -22,47 +22,60 @@ public class TrainNewralNet {
         List trainAccList = new ArrayList();
         List testAccList = new ArrayList();
 
+/*
         double[][] hoge = {
                 {1,1,7,1,-1},
                 {2,-1,2,-2,2},
                 {3,10,3,3,-3}
         };
+        double[][] fuga = {
+                {1,1,7,1,-1}
+        };
 
-        DoubleMatrix test = new DoubleMatrix(hoge);
-        DoubleMatrix mask = test.le(0);
-        mask.print();
-        return;
-/*
+        DoubleMatrix a = new DoubleMatrix(hoge);
+        DoubleMatrix b = new DoubleMatrix(fuga).transpose();
+        DoubleMatrix c = a.addRowVector(b);
+        c.print();
+*/
+
         MnistHandler mnistHandler = new MnistHandler();
         try {
             MnistData mnistData = mnistHandler.loadMnist(true);
             TwoLayerNet twoLayerNet = new TwoLayerNet(784, 50, 10);
 
             int itersNum = 10000;
-            int trainSize = mnistData.getTrainData().length;
+            int trainSize = mnistData.getTrainData().rows;
             int batchSize = 100;
             double learningRate = 0.1;
             int iter_per_epoch = Math.max(trainSize / batchSize, 1);
+            logger.info("iter_per_epoch : {}", iter_per_epoch);
 
             for (int i = 0; i < itersNum; i++) {
-                logger.info("iters count: {}", i);
                 BatchMnistData batchMnistData = mnistData.getTrainData4Batch(batchSize);
-                //twoLayerNet.numericalGradient(batchMnistData.getBatchData(), batchMnistData.getBatchLabel(), learningRate);
-                double loss = twoLayerNet.loss(batchMnistData.getBatchData(), batchMnistData.getBatchLabel());
-                trainLossList.add(loss);
-                logger.info("  loss value: {}", loss);
 
+                Gradient gradient = twoLayerNet.gradient(batchMnistData.getBatchData(), batchMnistData.getBatchLabels());
+
+                // update
+                twoLayerNet.setW1(twoLayerNet.getW1().sub(gradient.getW1().mul(learningRate)));
+                twoLayerNet.setB1(twoLayerNet.getB1().sub(gradient.getB1().mul(learningRate)));
+                twoLayerNet.setW2(twoLayerNet.getW2().sub(gradient.getW2().mul(learningRate)));
+                twoLayerNet.setB2(twoLayerNet.getB2().sub(gradient.getB2().mul(learningRate)));
+
+                double loss = twoLayerNet.loss(batchMnistData.getBatchData(), batchMnistData.getBatchLabels());
+                trainLossList.add(loss);
                 if (i % iter_per_epoch == 0) {
                     float trainAcc = twoLayerNet.accuracy(mnistData.getTrainData(), mnistData.getTrainLabels());
                     float testAcc = twoLayerNet.accuracy(mnistData.getTestData(), mnistData.getTestLabels());
 
                     trainAccList.add(trainAcc);
                     testAccList.add(testAcc);
+                    logger.info("  loss value: {}", loss);
+                    logger.info("  train Acc value: {}", trainAcc);
+                    logger.info("  testAcc value: {}", testAcc);
                 }
             }
         } catch (IOException e) {
             logger.error("load MNIST DATA failed.", e);
         }
-        */
     }
 }

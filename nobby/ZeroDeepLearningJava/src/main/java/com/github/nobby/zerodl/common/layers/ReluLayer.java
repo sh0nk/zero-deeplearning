@@ -2,16 +2,17 @@ package com.github.nobby.zerodl.common.layers;
 
 import org.jblas.DoubleMatrix;
 
-public class ReluLayer {
+public class ReluLayer implements LayerInterface {
     private DoubleMatrix maskMatrix;
 
     public DoubleMatrix forward(DoubleMatrix x) {
         maskMatrix = x.gt(0);
+
         DoubleMatrix out = x.dup();
-        return out.mmul(maskMatrix);
+        return out.mul(maskMatrix);
     }
 
     public DoubleMatrix backward(DoubleMatrix dout) {
-        return dout.mmul(maskMatrix);
+        return dout.mul(maskMatrix);
     }
 }

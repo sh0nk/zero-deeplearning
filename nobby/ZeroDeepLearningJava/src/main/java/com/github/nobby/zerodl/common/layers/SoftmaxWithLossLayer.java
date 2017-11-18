@@ -7,7 +7,7 @@ public class SoftmaxWithLossLayer {
     private double loss;
     private DoubleMatrix y; // output of softmax function
     private DoubleMatrix t; // labelData
-    SoftmaxWithLossLayer() {}
+    public SoftmaxWithLossLayer() {}
 
     public double forward(DoubleMatrix x, DoubleMatrix t) {
         this.t = t;

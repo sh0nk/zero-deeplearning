@@ -1,15 +1,17 @@
 package com.github.nobby.zerodl.common.layers;
 
+import lombok.Data;
 import org.jblas.DoubleMatrix;
 
-public class AffineLayer {
+@Data
+public class AffineLayer implements LayerInterface {
     private DoubleMatrix W;
     private DoubleMatrix b;
     private DoubleMatrix x;
     private DoubleMatrix dW;
     private DoubleMatrix db;
 
-    AffineLayer(DoubleMatrix w, DoubleMatrix b) {
+    public AffineLayer(DoubleMatrix w, DoubleMatrix b) {
         this.W = w;
         this.b = b;
     }
