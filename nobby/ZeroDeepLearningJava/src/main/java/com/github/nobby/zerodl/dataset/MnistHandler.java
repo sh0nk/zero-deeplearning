@@ -92,7 +92,6 @@ public class MnistHandler {
     }
 
     private double[][] getLabels(String fileName) throws IOException {
-        //ArrayList<Label> labelList = new ArrayList<>();
         DataInputStream is = new DataInputStream(new GZIPInputStream((new FileInputStream(BASE_PATH + fileName))));
         is.readInt();
         int numLabels = is.readInt();

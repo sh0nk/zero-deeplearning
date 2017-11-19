@@ -30,22 +30,16 @@ public class Functions {
     }
 
     public static DoubleMatrix softmax(DoubleMatrix input) {
-        DoubleMatrix result = new DoubleMatrix();
+        double max_x = input.max();
+        DoubleMatrix tmp = input.sub(max_x);  // counter measure for overflow
+        double sum_exp_x = 0;
         for (int i = 0; i < input.rows; i++) {
-            DoubleMatrix targetRow = input.getRow(i);
-            double max_a = targetRow.max();
-            double[] exp_a = new double[targetRow.columns];
-            double sum_exp_a = 0;
             for (int j = 0; j < input.columns; j++) {
-                // counter measure for overflow
-                exp_a[j] = Math.exp(targetRow.get(j) - max_a);
-                sum_exp_a += exp_a[j];
+                sum_exp_x += Math.exp(tmp.get(i, j));
+                tmp.put(i, j, Math.exp(tmp.get(i, j)));
             }
-            final double f_sum_exp_a = sum_exp_a;
-            Arrays.stream(exp_a).map(e ->  e / f_sum_exp_a);
-            result = i == 0 ? new DoubleMatrix(exp_a).transpose() : DoubleMatrix.concatVertically(result, new DoubleMatrix(exp_a).transpose());
         }
-        return result;
+        return tmp.div(sum_exp_x);
     }
 
     /**
@@ -53,23 +47,34 @@ public class Functions {
      * @param t train labels
      */
     public static double crossEntropyError(DoubleMatrix y, DoubleMatrix t) {
-        double error_sum = 0;
+        double errorSum = 0;
         for (int i = 0; i < y.rows; i++) {
-            double y_value = y.getRow(i).get(getLabelValue(t, i));
-            double error = Math.log(y_value + EPSILON);
-            error_sum += error;
+            double yError = y.get(i, getLabelIndex(t, i)) + EPSILON;
+            errorSum -= Math.log(yError);
         }
-        return -1 * error_sum / y.rows;
+        return (double) errorSum / (double) y.rows;
     }
 
     /**
-     * get the label value from 'one-hot-label' format label data
+     * get the label index from 'one-hot-label' format label data
      * @param t labelData Matrix
-     * @param targetRow get the label value of this row number
+     * @param targetRow get the label index of this row number
      * @return
      */
-    public static int getLabelValue(DoubleMatrix t, int targetRow) {
+    public static int getLabelIndex(DoubleMatrix t, int targetRow) {
         DoubleMatrix label = t.getRow(targetRow);
         return label.argmax();
     }
+
+
+    public static void printMatrix(DoubleMatrix x) {
+        logger.info("Matrix print start !!!!------- ");
+        int max = x.rows > 3 ? 3 : x.rows;
+        for (int i = 0; i < max; i++) {
+            x.getRow(i).print();
+        }
+        logger.info("Matrix print end !!!!------- ");
+    }
+
+
 }

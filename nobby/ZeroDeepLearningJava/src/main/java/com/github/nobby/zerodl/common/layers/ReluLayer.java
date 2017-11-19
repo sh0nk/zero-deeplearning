@@ -1,8 +1,13 @@
 package com.github.nobby.zerodl.common.layers;
 
+import com.github.nobby.zerodl.dataset.MnistHandler;
 import org.jblas.DoubleMatrix;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ReluLayer implements LayerInterface {
+    private static final Logger logger = LoggerFactory.getLogger(MnistHandler.class);
+
     private DoubleMatrix maskMatrix;
 
     public DoubleMatrix forward(DoubleMatrix x) {
@@ -13,6 +18,7 @@ public class ReluLayer implements LayerInterface {
     }
 
     public DoubleMatrix backward(DoubleMatrix dout) {
-        return dout.mul(maskMatrix);
+        dout = dout.mul(maskMatrix);
+        return dout;
     }
 }

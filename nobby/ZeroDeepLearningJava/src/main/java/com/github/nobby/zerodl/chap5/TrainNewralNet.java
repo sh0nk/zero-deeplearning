@@ -1,5 +1,7 @@
 package com.github.nobby.zerodl.chap5;
 
+import com.github.nobby.zerodl.common.Functions;
+import com.github.nobby.zerodl.common.layers.AffineLayer;
 import com.github.nobby.zerodl.dataset.BatchMnistData;
 import com.github.nobby.zerodl.dataset.MnistData;
 import com.github.nobby.zerodl.dataset.MnistHandler;
@@ -52,17 +54,22 @@ public class TrainNewralNet {
 
             for (int i = 0; i < itersNum; i++) {
                 BatchMnistData batchMnistData = mnistData.getTrainData4Batch(batchSize);
+                DoubleMatrix xBatch = batchMnistData.getBatchData();
+                DoubleMatrix tBatch = batchMnistData.getBatchLabels();
 
-                Gradient gradient = twoLayerNet.gradient(batchMnistData.getBatchData(), batchMnistData.getBatchLabels());
-
+                Gradient gradient = twoLayerNet.gradient(xBatch, tBatch);
                 // update
-                twoLayerNet.setW1(twoLayerNet.getW1().sub(gradient.getW1().mul(learningRate)));
-                twoLayerNet.setB1(twoLayerNet.getB1().sub(gradient.getB1().mul(learningRate)));
-                twoLayerNet.setW2(twoLayerNet.getW2().sub(gradient.getW2().mul(learningRate)));
-                twoLayerNet.setB2(twoLayerNet.getB2().sub(gradient.getB2().mul(learningRate)));
+                twoLayerNet.setW1(twoLayerNet.getW1().sub( (gradient.getW1().mul(learningRate))) );
+                twoLayerNet.setB1(twoLayerNet.getB1().sub( (gradient.getB1().mul(learningRate))) );
+                twoLayerNet.setW2(twoLayerNet.getW2().sub( (gradient.getW2().mul(learningRate))) );
+                twoLayerNet.setB2(twoLayerNet.getB2().sub( (gradient.getB2().mul(learningRate))) );
 
-                double loss = twoLayerNet.loss(batchMnistData.getBatchData(), batchMnistData.getBatchLabels());
+                twoLayerNet.updLayerParams();
+
+                double loss = twoLayerNet.loss(xBatch, tBatch);
+
                 trainLossList.add(loss);
+
                 if (i % iter_per_epoch == 0) {
                     float trainAcc = twoLayerNet.accuracy(mnistData.getTrainData(), mnistData.getTrainLabels());
                     float testAcc = twoLayerNet.accuracy(mnistData.getTestData(), mnistData.getTestLabels());
@@ -73,9 +80,12 @@ public class TrainNewralNet {
                     logger.info("  train Acc value: {}", trainAcc);
                     logger.info("  testAcc value: {}", testAcc);
                 }
+
             }
         } catch (IOException e) {
             logger.error("load MNIST DATA failed.", e);
         }
+
     }
+
 }

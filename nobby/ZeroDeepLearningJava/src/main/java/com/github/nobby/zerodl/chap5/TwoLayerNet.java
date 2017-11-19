@@ -1,5 +1,6 @@
 package com.github.nobby.zerodl.chap5;
 
+import com.github.nobby.zerodl.common.Functions;
 import com.github.nobby.zerodl.common.layers.AffineLayer;
 import com.github.nobby.zerodl.common.layers.LayerInterface;
 import com.github.nobby.zerodl.common.layers.ReluLayer;
@@ -18,7 +19,6 @@ import java.util.*;
 @Data
 public class TwoLayerNet {
     private static final Logger logger = LoggerFactory.getLogger(TwoLayerNet.class);
-    private static final double h = 0.0001;
 
     private double weightInitStd = 0.01;
     private DoubleMatrix W1;
@@ -40,21 +40,20 @@ public class TwoLayerNet {
         Arrays.fill(arrayB2, 0);
         B2 = new DoubleMatrix(arrayB2).transpose();
 
-        initLayers();
-    }
-
-    TwoLayerNet(DoubleMatrix w1, DoubleMatrix b1, DoubleMatrix w2, DoubleMatrix b2) {
-        W1 = w1; W2 = w2;
-        B1 = b1; B2 = b2;
+        layerList = new ArrayList<LayerInterface>();
         initLayers();
     }
 
     private void initLayers() {
-        layerList = new ArrayList<LayerInterface>();
         layerList.add(new AffineLayer(W1, B1));
         layerList.add(new ReluLayer());
         layerList.add(new AffineLayer(W2, B2));
         lastLayer = new SoftmaxWithLossLayer();
+    }
+
+    public void updLayerParams() {
+        layerList.clear();
+        initLayers();
     }
 
     /**
@@ -82,7 +81,7 @@ public class TwoLayerNet {
                 correctCount++;
             }
         }
-        return correctCount / y.rows;
+        return (float) correctCount / y.rows;
     }
 
     public Gradient gradient(DoubleMatrix x, DoubleMatrix t) {
@@ -102,9 +101,9 @@ public class TwoLayerNet {
         AffineLayer affineLayer2 = (AffineLayer) layerList.get(2);
 
         gradient.setW1(affineLayer1.getDW());
-        gradient.setB1(affineLayer1.getDb());
+        gradient.setB1(affineLayer1.getDB());
         gradient.setW2(affineLayer2.getDW());
-        gradient.setB2(affineLayer2.getDb());
+        gradient.setB2(affineLayer2.getDB());
 
         return gradient;
     }
