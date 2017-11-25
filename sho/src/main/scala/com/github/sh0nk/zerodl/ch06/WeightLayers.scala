@@ -9,7 +9,7 @@ case class Affine(var initW: DenseMatrix[Double], var initb: DenseVector[Double]
   W = Map(wKey -> initW)
   Wb = Map(bKey -> initb)
 
-  override def forward(x: DenseMatrix[Double]): DenseMatrix[Double] = {
+  override def forward(x: DenseMatrix[Double], train: Boolean = false): DenseMatrix[Double] = {
     this.x = x
     var mul = x * W(wKey)
     mul(*, ::) += Wb(bKey) // add row vec to all the rows
@@ -24,4 +24,3 @@ case class Affine(var initW: DenseMatrix[Double], var initb: DenseVector[Double]
     dX
   }
 }
-

@@ -3,7 +3,7 @@ package com.github.sh0nk.zerodl.ch05
 import breeze.linalg.DenseMatrix
 
 trait Layer {
-  def forward(x: DenseMatrix[Double]): DenseMatrix[Double]
+  def forward(x: DenseMatrix[Double], train: Boolean = false): DenseMatrix[Double]
 
   def backward(dout: DenseMatrix[Double]): DenseMatrix[Double]
 }

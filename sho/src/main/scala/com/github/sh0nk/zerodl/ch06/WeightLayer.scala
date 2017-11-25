@@ -10,7 +10,7 @@ trait WeightLayer extends Layer {
   var dW: Map[String, DenseMatrix[Double]] = Map()
   var dWb: Map[String, DenseVector[Double]] = Map()
 
-  def forward(x: DenseMatrix[Double]): DenseMatrix[Double]
+  def forward(x: DenseMatrix[Double], train: Boolean = false): DenseMatrix[Double]
 
   def backward(dout: DenseMatrix[Double]): DenseMatrix[Double]
 }

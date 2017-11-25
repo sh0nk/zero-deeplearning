@@ -46,6 +46,20 @@ class BGMiniBatchRunnerch06(loader: MNISTLoader) {
     plt.show()
   }
 
+  // FIXME: Merge to drawLoss
+  def drawAccuracy(dispAccuracyMulti: Seq[Seq[Double]]) {
+    import scala.collection.JavaConverters._
+
+    val plt = Plot.create()
+    plt.title("SGD Accuracy")
+    dispAccuracyMulti.foreach { dispLosses =>
+      plt.plot().add(dispLosses.indices.map(Int.box).toList.asJava, dispLosses.map(Double.box).toList.asJava)
+        .linestyle("-").label("Accuracy")
+    }
+    plt.legend().loc("upper right")
+    plt.show()
+  }
+
   def batch(network: BackpropagationGradientNNch06, optimizer: Optimizer = SGD(0.01)): Double = {
     var batchX = DenseMatrix.zeros[Double](batchSize, trainX.cols)
     Logger.debug(s"batchX ${batchX.rows}, ${batchX.cols}")
@@ -64,6 +78,10 @@ class BGMiniBatchRunnerch06(loader: MNISTLoader) {
     Logger.info(s"loss val: $loss")
 
     loss
+  }
+
+  def accuracy(network: BackpropagationGradientNNch06): Double = {
+    network.accuracy(trainX, trainY)
   }
 
   private def gradientDescent(network: BackpropagationGradientNNch06,
@@ -143,28 +161,72 @@ object BGMiniBatchRunnerch06 {
     runner.loadData()
     val networksAndLosses = Seq(
       (new BackpropagationGradientNNch06(runner.trainX.cols, Seq(100, 100, 100), outputLayer,
-        weightInitDeboost = "0.01"), ArrayBuffer[Double]()),
+        weightInitDeboost = "0.01"), ArrayBuffer[Double](), ArrayBuffer[Double]()),
       (new BackpropagationGradientNNch06(runner.trainX.cols, Seq(100, 100, 100), outputLayer,
-        weightInitDeboost = "xavier"), ArrayBuffer[Double]()),
+        weightInitDeboost = "xavier"), ArrayBuffer[Double](), ArrayBuffer[Double]()),
       (new BackpropagationGradientNNch06(runner.trainX.cols, Seq(100, 100, 100), outputLayer,
-        weightInitDeboost = "he"), ArrayBuffer[Double]())
+        weightInitDeboost = "he"), ArrayBuffer[Double](), ArrayBuffer[Double]())
     )
 
     Range(0, iterNum).foreach { v =>
       Logger.info(s"batch attempt ${v}")
       networksAndLosses.foreach(nl => nl._2 += runner.batch(nl._1))
 
+      // Per Epoch
+      if (v % (runner.trainX.rows / runner.batchSize) == 0) {
+        networksAndLosses.foreach(nl => nl._3 += runner.accuracy(nl._1))
+      }
+
       if (v % 2000 == 0) {
         runner.drawLoss(networksAndLosses.map(_._2))
+
+        runner.drawAccuracy(networksAndLosses.map(_._3))
+      }
+    }
+  }
+
+  // FIXME: This method never converges... When `weightInitStd=0.2`, then no batch norm version converged
+  // It means no batch norm version works as the book, so calculation of BatchNormalization
+  // should have some problems
+  def testBatchNormalization(): Unit = {
+    val runner = new BGMiniBatchRunnerch06(new MNISTLoader())
+
+    runner.loadData()
+    // Reduce the number of data
+    runner.trainX = runner.trainX(0 until 1000, ::)
+    runner.trainY = runner.trainY(0 until 1000, ::)
+
+    val networksAndLosses = Seq(
+      (new BackpropagationGradientNNch06(runner.trainX.cols, Seq(100, 100, 100, 100, 100), outputLayer,
+        weightInitDeboost = "0.01", weightInitStd = 0.05), ArrayBuffer[Double](), ArrayBuffer[Double]()),
+      (new BackpropagationGradientNNch06(runner.trainX.cols, Seq(100, 100, 100, 100, 100), outputLayer,
+        weightInitDeboost = "0.01", weightInitStd = 0.05, useBatchNorm = true), ArrayBuffer[Double](), ArrayBuffer[Double]())
+    )
+
+    Range(0, iterNum).foreach { v =>
+      Logger.info(s"batch attempt ${v}")
+      networksAndLosses.foreach(nl => nl._2 += runner.batch(nl._1))
+
+      // Per Epoch
+      if (v % (runner.trainX.rows / runner.batchSize) == 0) {
+        networksAndLosses.foreach(nl => nl._3 += runner.accuracy(nl._1))
+      }
+
+      if (v % 1000 == 0 && v > 0) {
+        runner.drawAccuracy(networksAndLosses.map(_._3))
+//        runner.drawLoss(networksAndLosses.map(_._2))
+
+        return
       }
     }
   }
 
 
   def main(args: Array[String]) = {
-//    testGradientNumericalGradientDiff()
+    //    testGradientNumericalGradientDiff()
 
-//    testOptimizersComparison()
-    testWeightInitDeboost()
+//        testOptimizersComparison()
+//        testWeightInitDeboost()
+        testBatchNormalization()
   }
 }

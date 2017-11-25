@@ -9,7 +9,7 @@ class OptimizersOnContour(optimizer: Optimizer) {
     Wb = Map("xy" -> DenseVector(-7.0, 2.0)) // params
     dWb = Map("xy" -> DenseVector(0.0, 0.0)) // grad
 
-    override def forward(x: DenseMatrix[Double]): DenseMatrix[Double] = ???
+    override def forward(x: DenseMatrix[Double], train: Boolean = false): DenseMatrix[Double] = ???
     override def backward(dout: DenseMatrix[Double]): DenseMatrix[Double] = ???
   }
 

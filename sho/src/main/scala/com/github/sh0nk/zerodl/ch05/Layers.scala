@@ -30,7 +30,7 @@ case class Affine(var W: DenseMatrix[Double], var b: DenseVector[Double]) extend
   var dW: DenseMatrix[Double] = _
   var db: DenseVector[Double] = _
 
-  override def forward(x: DenseMatrix[Double]): DenseMatrix[Double] = {
+  override def forward(x: DenseMatrix[Double], train: Boolean = false): DenseMatrix[Double] = {
     this.x = x
     var mul = x * W
     Logger.trace(mul.rows)
@@ -51,7 +51,7 @@ case class Affine(var W: DenseMatrix[Double], var b: DenseVector[Double]) extend
 case class Sigmoid() extends Layer {
   var captured: DenseMatrix[Double] = _
 
-  override def forward(x: DenseMatrix[Double]): DenseMatrix[Double] = {
+  override def forward(x: DenseMatrix[Double], train: Boolean = false): DenseMatrix[Double] = {
     captured = DenseMatrix.ones[Double](x.rows, x.cols) /:/ (exp(-x) +:+ DenseMatrix.ones[Double](x.rows, x.cols))
     captured
   }
@@ -65,7 +65,7 @@ case class Sigmoid() extends Layer {
 case class ReLU() extends Layer {
   var maskIdx: DenseMatrix[Boolean] = _
 
-  override def forward(x: DenseMatrix[Double]): DenseMatrix[Double] = {
+  override def forward(x: DenseMatrix[Double], train: Boolean = false): DenseMatrix[Double] = {
     maskIdx = x <:= DenseMatrix.zeros[Double](x.rows, x.cols)
 //    Logger.debug(maskIdx)
     mask(x)
