@@ -1,4 +1,4 @@
-package com.github.nobby.zerodl.com.github.nobby.zerodl.dataset;
+package com.github.nobby.zerodl.dataset;
 
 import org.jblas.DoubleMatrix;
 import org.slf4j.Logger;
@@ -36,10 +36,10 @@ public class MnistHandler {
         download(TEST_LABEL_FILE);
 
         double[][] trainData = getFeatures(TRAIN_IMAGE_FILE, normalize);
-        ArrayList<Label> trainLabelList = getLabels(TRAIN_LABEL_FILE);
+        double[][] trainLabelList = getLabels(TRAIN_LABEL_FILE);
 
         double[][] testData = getFeatures(TEST_IMAGE_FILE, normalize);
-        ArrayList<Label> testLabelList = getLabels(TEST_LABEL_FILE);
+        double[][] testLabelList = getLabels(TEST_LABEL_FILE);
 
         MnistData mnistData = new MnistData(trainData, trainLabelList, testData, testLabelList);
         logger.info("----- load MNIST data end.");
@@ -91,24 +91,21 @@ public class MnistHandler {
         return features;
     }
 
-    private ArrayList<Label> getLabels(String fileName) throws IOException {
-        ArrayList<Label> labelList = new ArrayList<>();
+    private double[][] getLabels(String fileName) throws IOException {
         DataInputStream is = new DataInputStream(new GZIPInputStream((new FileInputStream(BASE_PATH + fileName))));
         is.readInt();
         int numLabels = is.readInt();
+        int numDimensions = 10;
 
+        double[][] labels = new double[numLabels][numDimensions];
         for (int i = 0; i < numLabels; i++) {
             int labelValue = is.readUnsignedByte();
-            double[] oneHotLabel = new double[10];
-            for (int j = 0; j < 10; j++) {
-                oneHotLabel[j] = (j == labelValue) ? 1 : 0;
+            for (int j = 0; j < numDimensions; j++) {
+                labels[i][j] = (j == labelValue) ? 1 : 0;
             }
-            Label label = new Label(labelValue, new DoubleMatrix(oneHotLabel).transpose());
-            labelList.add(label);
         }
-        return labelList;
+        return labels;
     }
-
 
     private void download(String fileName) throws IOException {
         File baseDir = new File(BASE_PATH);

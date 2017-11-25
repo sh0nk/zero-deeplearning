@@ -1,5 +1,6 @@
 package com.github.nobby.zerodl;
 
+import com.github.nobby.zerodl.chap5.TrainNewralNet;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -16,5 +17,7 @@ public class Executor implements CommandLineRunner {
 
     @Override
     public void run(String... arg0) throws Exception {
+        TrainNewralNet trainNewralNet = new TrainNewralNet();
+        trainNewralNet.main(null);
     }
 }
