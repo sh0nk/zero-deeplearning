@@ -4,21 +4,35 @@ import breeze.linalg.{DenseMatrix, DenseVector, randn}
 import com.github.sh0nk.zerodl.ch04.Logger
 import com.github.sh0nk.zerodl.ch05.{Layer, OutputLayer, ReLU, SoftmaxWithLoss}
 
-class BackpropagationGradientNNch06(inputSize: Int, hiddenSize: Int, outputSize: Int, weightInitStd: Double = 0.01) {
-  var layers: Seq[Layer] = _
+import scala.collection.mutable.ListBuffer
+
+class BackpropagationGradientNNch06(inputSize: Int, hiddenSize: Seq[Int], outputSize: Int,
+                                    weightInitStd: Double = 0.01, weightInitDeboost: String = "he") {
+  var layers: ListBuffer[Layer] = ListBuffer()
   var lastLayer: OutputLayer = _
+
+  val weightInitDeboostFunc = weightInitDeboost match {
+    case "he" => n: Double => math.sqrt(2.0 / n)
+    case "xavier" => n: Double => math.sqrt(1.0 / n)
+    case _ => n: Double => weightInitStd
+  }
+
   initLayers()
 
   def initLayers(): Unit = {
-    layers = Seq(
-      Affine(
-        randn((inputSize, hiddenSize)) * weightInitStd,
-        DenseVector.zeros(hiddenSize)),
-      ReLU(),
-      Affine(
-        randn((hiddenSize, outputSize)) * weightInitStd,
-        DenseVector.zeros(outputSize))
-    )
+    val multiSize = ListBuffer[Int]()
+    multiSize += inputSize
+    multiSize ++= hiddenSize
+    multiSize += outputSize
+
+    val multiLayers = (multiSize zip multiSize.drop(1)).foreach { case (first, second) =>
+      layers ++= Seq(Affine(
+        weightInitDeboostFunc(first) * randn((first, second)),
+        DenseVector.zeros(second)),
+      ReLU())
+    }
+    layers = layers.dropRight(1) // remove last activation func
+
     lastLayer = SoftmaxWithLoss()
   }
 
@@ -59,6 +73,5 @@ object BackpropagationGradientNN {
 //    test1()
 //    testMat2Vec()
   }
-
 
 }

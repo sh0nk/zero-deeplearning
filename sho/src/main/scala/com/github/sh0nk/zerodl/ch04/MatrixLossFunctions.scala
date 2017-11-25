@@ -16,7 +16,7 @@ object MatrixLossFunctions {
     crossEntropyError(y, ontHotToIndexVec(t))
   }
 
-   def ontHotToIndexVec(t: DenseMatrix[Int]): DenseVector[Int] = {
+  def ontHotToIndexVec(t: DenseMatrix[Int]): DenseVector[Int] = {
     argmax(t(*, ::))
   }
 
