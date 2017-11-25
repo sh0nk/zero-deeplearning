@@ -1,6 +1,5 @@
 package com.github.nobby.zerodl.chap5;
 
-import com.github.nobby.zerodl.common.Functions;
 import com.github.nobby.zerodl.common.layers.AffineLayer;
 import com.github.nobby.zerodl.common.layers.LayerInterface;
 import com.github.nobby.zerodl.common.layers.ReluLayer;

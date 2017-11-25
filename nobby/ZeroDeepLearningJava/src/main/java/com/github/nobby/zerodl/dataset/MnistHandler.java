@@ -107,28 +107,6 @@ public class MnistHandler {
         return labels;
     }
 
-    //TODO 消す
-    /*
-    private ArrayList<Label> getLabels(String fileName) throws IOException {
-        ArrayList<Label> labelList = new ArrayList<>();
-        DataInputStream is = new DataInputStream(new GZIPInputStream((new FileInputStream(BASE_PATH + fileName))));
-        is.readInt();
-        int numLabels = is.readInt();
-
-        for (int i = 0; i < numLabels; i++) {
-            int labelValue = is.readUnsignedByte();
-            double[] oneHotLabel = new double[10];
-            for (int j = 0; j < 10; j++) {
-                oneHotLabel[j] = (j == labelValue) ? 1 : 0;
-            }
-            Label label = new Label(labelValue, new DoubleMatrix(oneHotLabel).transpose());
-            labelList.add(label);
-        }
-        return labelList;
-    }
-    */
-
-
     private void download(String fileName) throws IOException {
         File baseDir = new File(BASE_PATH);
         if (!baseDir.exists()) {

@@ -1,10 +1,10 @@
 package com.github.nobby.zerodl.chap5;
 
-import com.github.nobby.zerodl.common.Functions;
-import com.github.nobby.zerodl.common.layers.AffineLayer;
 import com.github.nobby.zerodl.dataset.BatchMnistData;
 import com.github.nobby.zerodl.dataset.MnistData;
 import com.github.nobby.zerodl.dataset.MnistHandler;
+import com.github.sh0nk.matplotlib4j.Plot;
+import com.github.sh0nk.matplotlib4j.PythonExecutionException;
 import org.jblas.DoubleMatrix;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,28 +17,12 @@ import java.util.List;
  * Created by onishinobuhiro on 2017/09/23.
  */
 public class TrainNewralNet {
-    private static final Logger logger = LoggerFactory.getLogger(MnistHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(TrainNewralNet.class);
     
     public static void main(String[] args) {
         List trainLossList = new ArrayList();
         List trainAccList = new ArrayList();
         List testAccList = new ArrayList();
-
-/*
-        double[][] hoge = {
-                {1,1,7,1,-1},
-                {2,-1,2,-2,2},
-                {3,10,3,3,-3}
-        };
-        double[][] fuga = {
-                {1,1,7,1,-1}
-        };
-
-        DoubleMatrix a = new DoubleMatrix(hoge);
-        DoubleMatrix b = new DoubleMatrix(fuga).transpose();
-        DoubleMatrix c = a.addRowVector(b);
-        c.print();
-*/
 
         MnistHandler mnistHandler = new MnistHandler();
         try {
@@ -80,12 +64,26 @@ public class TrainNewralNet {
                     logger.info("  train Acc value: {}", trainAcc);
                     logger.info("  testAcc value: {}", testAcc);
                 }
-
             }
+
+            Plot plt = Plot.create();
+            plt.plot()
+                    .add(trainAccList)
+                    .label("train acc");
+            plt.plot()
+                    .add(testAccList)
+                    .label("test acc")
+                    .linestyle("--");
+            plt.xlabel("epochs");
+            plt.ylabel("accuracy");
+            plt.title("title");
+            plt.legend().loc("lower right");
+            plt.show();
+
         } catch (IOException e) {
             logger.error("load MNIST DATA failed.", e);
+        } catch (PythonExecutionException e) {
+            logger.error("python env error", e);
         }
-
     }
-
 }

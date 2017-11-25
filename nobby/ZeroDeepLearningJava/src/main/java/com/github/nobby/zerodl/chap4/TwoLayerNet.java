@@ -1,12 +1,10 @@
 package com.github.nobby.zerodl.chap4;
 
 import com.github.nobby.zerodl.common.Functions;
-import com.github.nobby.zerodl.dataset.Label;
 import org.jblas.DoubleMatrix;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -45,24 +43,11 @@ public class TwoLayerNet {
      * @param x : image data. 100 rows * 784 columns
      */
     private DoubleMatrix predict(DoubleMatrix x) {
-        DoubleMatrix a1 = x.mmul(W1);
-        // test
-        a1.addRowVector(B1);
-        // add b1 matrix
-        for (int i = 0; i < a1.rows; i++) {
-            for (int j = 0; j < a1.columns; j++) {
-                a1.put(i, j, a1.get(i, j) + B1.get(0, j));
-            }
-        }
+        DoubleMatrix a1 = x.mmul(W1).addRowVector(B1);
         DoubleMatrix z1 = Functions.sigmoid(a1);
 
         // add b2 matrix
-        DoubleMatrix a2 = z1.mmul(W2);
-        for (int i = 0; i < a2.rows; i++) {
-            for (int j = 0; j < a2.columns; j++) {
-                a2.put(i, j, a2.get(i, j) + B2.get(0, j));
-            }
-        }
+        DoubleMatrix a2 = z1.mmul(W2).addRowVector(B2);
         return Functions.softmax(a2);
     }
 
@@ -76,14 +61,12 @@ public class TwoLayerNet {
         DoubleMatrix y = predict(x);
         for (int i = 0; i < y.rows; i++) {
             int predictValue = y.getRow(i).argmax();
-            //TODO 直す
-            /*
-            if (predictValue == t.get(i).getLabelValue()) {
+            int labelValue = t.getRow(i).argmax();
+            if (predictValue == labelValue) {
                 correctCount++;
             }
-            */
         }
-        return correctCount / y.rows;
+        return (float) correctCount / y.rows;
     }
 
     public void numericalGradient(DoubleMatrix x, DoubleMatrix t, double learningRatio) {

@@ -3,12 +3,16 @@ package com.github.nobby.zerodl.dataset;
 
 import lombok.Data;
 import org.jblas.DoubleMatrix;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Created by onishinobuhiro on 2017/09/23.
  */
 @Data
 public class MnistData {
+    private static final Logger logger = LoggerFactory.getLogger(MnistHandler.class);
+
     private DoubleMatrix trainData;       // 60000 rows * 784 columns matrix
     private DoubleMatrix trainLabels;     // 60000 rows * 10  columns matrix
     private DoubleMatrix testData;        // 10000 rows * 784 columns matrxi
@@ -24,6 +28,7 @@ public class MnistData {
     public BatchMnistData getTrainData4Batch(int size) {
         int trainDataNum = trainData.rows;
         int rand = (int)(Math.random() * trainDataNum);
+
         DoubleMatrix batchData = trainData.getRow(rand);
         DoubleMatrix batchLabels = trainLabels.getRow(rand);
 

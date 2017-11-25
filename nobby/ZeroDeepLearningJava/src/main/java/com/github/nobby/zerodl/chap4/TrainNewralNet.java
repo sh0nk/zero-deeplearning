@@ -14,7 +14,7 @@ import java.util.List;
  * Created by onishinobuhiro on 2017/09/23.
  */
 public class TrainNewralNet {
-    private static final Logger logger = LoggerFactory.getLogger(MnistHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(TrainNewralNet.class);
     
     public static void main(String[] args) {
         List trainLossList = new ArrayList();

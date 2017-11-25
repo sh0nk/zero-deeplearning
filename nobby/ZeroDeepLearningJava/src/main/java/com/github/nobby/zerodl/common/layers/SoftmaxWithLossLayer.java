@@ -1,13 +1,9 @@
 package com.github.nobby.zerodl.common.layers;
 
 import com.github.nobby.zerodl.common.Functions;
-import com.github.nobby.zerodl.dataset.MnistHandler;
 import org.jblas.DoubleMatrix;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class SoftmaxWithLossLayer {
-    private static final Logger logger = LoggerFactory.getLogger(MnistHandler.class);
 
     private double loss;
     private DoubleMatrix y; // output of softmax function

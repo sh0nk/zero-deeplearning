@@ -24,6 +24,7 @@ public class AffineLayer implements LayerInterface {
     public DoubleMatrix forward(DoubleMatrix x) {
         this.X = x;
         DoubleMatrix out = x.mmul(this.W).addRowVector(this.B);
+
         return out;
     }
 
